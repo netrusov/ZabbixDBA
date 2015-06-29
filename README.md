@@ -10,9 +10,9 @@ perl bootstrap.pl start /path/to/config.pl
 ```
 
 #### TODO
-~~- add ability to create discovery rules~~
 - add comments
-~~- add SIG signal handlers to stop loop gracefully~~
 - add logging
-~~- add Zabbix template~~
-- reformat code for easy reading and maintenance
+- reformat code for easy reading and maintenance  
+- ~~add SIG signal handlers to stop loop gracefully~~  
+- ~~add Zabbix template~~  
+- ~~add ability to create discovery rules~~ 

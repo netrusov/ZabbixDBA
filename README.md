@@ -2,7 +2,7 @@
 Perl plugin for Zabbix to monitor RDBMS. Used Orabbix as example.
 
 #### Configuration
-Add your database information just like described in conf/config.pl . This file uses Perl hash structure to describe configuration.
+Add your database information just like described in _conf/config.pl_. This file uses Perl hash structure to describe configuration.
 
 #### Usage
 ```

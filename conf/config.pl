@@ -1,7 +1,7 @@
 {
     zabbix_server_list => ['zabbix01'],
     zabbix01           => {
-        zabbix01 => '192.168.1.100',
+        address => '192.168.1.100',
         port     => 10051
     },
     daemon => { sleep => 120 },

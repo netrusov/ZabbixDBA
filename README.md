@@ -9,7 +9,7 @@ Perl plugin for Zabbix to monitor RDBMS. Used Orabbix as example.
 - JSON
 
 #### Configuration
-Create user ZABBIX (or whatever you want) in database and grant privileges regarging your privacy policy (I've granted select privilege on all dictionary tables).  
+Create user ZABBIX (or whatever you want) in database and grant privileges regarding your privacy policy (I've granted select privilege on all dictionary tables).  
   
 Add your database information just like described in _conf/config.pl_ (this file uses Perl hash structure to describe configuration).
 

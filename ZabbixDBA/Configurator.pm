@@ -2,8 +2,8 @@ package ZabbixDBA::Configurator;
 
 use strict;
 use warnings;
-use Carp qw(carp confess);
 use English qw(-no_match_vars);
+use Carp qw(carp confess);
 
 our $VERSION = 1.000;
 

@@ -1,6 +1,13 @@
 ## ZabbixDBA
 Perl plugin for Zabbix to monitor RDBMS. Used Orabbix as example.
 
+#### Requirements
+- DBI
+- Parallel::ForkManager
+- IO::Socket::INET
+- MIME::Base64
+- JSON
+
 #### Configuration
 Create user ZABBIX (or whatever you want) in database and grant privileges regarging your privacy policy (I've granted select privilege on all dictionary tables).  
   

@@ -30,7 +30,7 @@
     },
     archive => {
         query => q{
-            select count (*)
+            select avg ( (blocks * block_size) / 1024 / 1024)
             from gv$archived_log
             where completion_time >= (sysdate - 1 / 24)
         },

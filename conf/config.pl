@@ -4,7 +4,7 @@
         address => '192.168.1.100',
         port     => 10051
     },
-    daemon => { sleep => 120 },
+    daemon => { sleep => 120, maxproc => 20, },
     database_list => [ 'XXXPRD', 'XXXDEV' ],
     default       => {
         user            => 'zabbix',

@@ -1,4 +1,4 @@
-{   
+{
     query_list => [
         'alive',                 'archive',
         'uptime',                'dbblockgets',
@@ -30,7 +30,7 @@
     },
     archive => {
         query => q{
-            select avg ( (blocks * block_size) / 1024 / 1024)
+            select nvl (avg ( (blocks * block_size) / 1024 / 1024), 0)
             from gv$archived_log
             where completion_time >= (sysdate - 1 / 24)
         },
@@ -260,7 +260,7 @@
     },
     waits_file_io => {
         query => q{
-            select sum (total_waits)
+            select nvl (sum (total_waits), 0)
             from gv$system_event
             where event in ('file identify', 'file open')
         },
@@ -318,6 +318,7 @@
             connect by nocycle     prior inst_id = blocking_instance
             and prior sid = blocking_session)
         },
+        no_data_found => 0,
     },
     dbversion => {
         query => q{
@@ -332,17 +333,17 @@
                 query => q{
                     select name tsname from gv$tablespace
                 },
-                columns => ['TSNAME']
+                columns => ['TSNAME'],
             },
         },
         item => {
             tablespace_usage => {
                 query => q{
-                        select tablespace_name tsname, used_percent pct
-                        from dba_tablespace_usage_metrics
-                    },
-                key => { 'TSNAME' => 'PCT' }
-            }
+                    select tablespace_name tsname, used_percent pct
+                    from dba_tablespace_usage_metrics
+                },
+                key_value => { 'TSNAME' => 'PCT' }
+            },
         },
-    }
+    },
 }

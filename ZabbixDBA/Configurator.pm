@@ -1,11 +1,12 @@
 package ZabbixDBA::Configurator;
 
+use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
-use Carp qw(carp confess);
+use Carp qw(confess);
 
-our $VERSION = 1.000;
+our $VERSION = '1.001';
 
 sub new {
     my ( $class, $file ) = @_;
@@ -13,11 +14,12 @@ sub new {
     my $self = {};
 
     if ( !-f $file ) {
-        confess q{Didn't find configuration file};
+        confess "Didn't find '$file'";
     }
     else {
-        $self = do($file)
-            or confess "Failure compiling '$file': " . $EVAL_ERROR;
+        if ( !eval { $self = do($file) } ) {
+            confess "Failure compiling '$file': " . $EVAL_ERROR;
+        }
     }
 
     return bless $self, $class;

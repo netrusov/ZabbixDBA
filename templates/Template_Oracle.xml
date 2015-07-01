@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-06-30T11:17:37Z</date>
+    <date>2015-07-01T16:11:33Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -2419,7 +2419,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:alive.sum(300)}&lt;1</expression>
+            <expression>{Template Oracle:alive.min(300)}&lt;1</expression>
             <name>No data received for 5 minutes</name>
             <url/>
             <status>0</status>
@@ -2432,7 +2432,7 @@
             <expression>({Template Oracle:pga.last(0)}*100/{Template Oracle:pga_aggregate_target.last(0)})&gt;90</expression>
             <name>PGA alarm</name>
             <url/>
-            <status>0</status>
+            <status>1</status>
             <priority>2</priority>
             <description/>
             <type>0</type>

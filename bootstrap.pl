@@ -6,17 +6,23 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp qw(confess carp);
 
-our $VERSION = 1.010;
-
-use Parallel::ForkManager;
-use DBI;
+use File::Basename qw(basename);
 use FindBin qw($Bin);
 use lib $Bin;
 
+use DBI;
+use Parallel::ForkManager;
+
 use JSON qw(encode_json);
+use Try::Tiny;
+
+use Log::Any qw($log);
+use Log::Any::Adapter ( 'File', basename($PROGRAM_NAME) . '.log' );
 
 use ZabbixDBA::Configurator;
 use ZabbixDBA::Sender;
+
+our $VERSION = '1.011';
 
 if ( scalar @ARGV < 2 ) {
     confess 'Usage: perl bootstrap.pl start /path/to/config.pl';
@@ -27,78 +33,104 @@ my ( $command, $confile ) = @ARGV;
 if ( $command ne 'start' ) {
     confess 'Usage: perl bootstrap.pl start /path/to/config.pl';
 }
-
-my ( $conf, $sender );
-
-my $pm = Parallel::ForkManager->new(20);
-
-my $dbpool = {};
-
 my $running = 1;
 
-local $SIG{INT}  = sub { $running = 0; };
-local $SIG{HUP}  = sub { $running = 0; };
-local $SIG{ALRM} = sub { $running = 0; };
-local $SIG{USR1} = sub { $running = 0; };
+local $SIG{INT}  = \&stop;
+local $SIG{HUP}  = \&stop;
+local $SIG{ALRM} = \&stop;
+local $SIG{USR1} = \&stop;
+
+my $pm = Parallel::ForkManager->new(20);
+my ( $conf, $sender, $dbpool );
+
+$log->info('Starting');
 
 while ($running) {
 
-    # Reloading configuration file to see
-    # if values were changed (no need to restart daemon)
-    $conf = ZabbixDBA::Configurator->new($confile);
-    $pm->set_max_procs( $conf->{daemon}->{maxproc} );
-    $sender = ZabbixDBA::Sender->new( map { $_ => $conf->{$_} }
-            @{ $conf->{zabbix_server_list} } );
+    # Reloading configuration file to see if
+    # values were changed (no need to restart daemon)
+    try {
+        $conf = ZabbixDBA::Configurator->new($confile);
+    }
+    catch {
+        $log->errorf( q{[configuration] %s}, $_ );
+        confess $_;
+    };
+
+    $pm->set_max_procs( $conf->{daemon}->{maxproc} // 20 );
+
+    try {
+        $sender = ZabbixDBA::Sender->new( map { $_ => $conf->{$_} }
+                @{ $conf->{zabbix_server_list} } );
+    }
+    catch {
+        $log->errorf( q{[configuration] %s}, $_ );
+        confess $_;
+    };
 
     for my $db ( @{ $conf->{database_list} } ) {
         if ( !$conf->{$db} || !$conf->{$db}->{dsn} ) {
+            $log->warnf(
+                q{[database] configuration of '%s' is not described in '%s'},
+                $db, $confile
+            );
             next;
         }
 
         if ( !$dbpool->{$db} ) {
-            my $opts = {
-                PrintError => 0,
-                RaiseError => 0,
-                AutoCommit => 0,
-                AutoInactiveDestroy =>
-                    1 # useful when fork() is used, see mode in DBI documentation
-            };
-
-            my $user = $conf->{$db}->{user} // $conf->{default}->{user};
-            my $pass = $conf->{$db}->{password}
-                // $conf->{default}->{password};
-
-            $dbpool->{$db}
-                = DBI->connect( $conf->{$db}->{dsn}, $user, $pass, $opts )
-                or confess DBI->errstr();
+            $dbpool->{$db} = get_connection($db) or next;
         }
 
-        my $ql = ZabbixDBA::Configurator->new( $conf->{$db}->{query_list_file}
-                // $conf->{default}->{query_list_file} );
+        my $ql;
+
+        try {
+            $ql
+                = ZabbixDBA::Configurator->new(
+                $conf->{$db}->{query_list_file}
+                    // $conf->{default}->{query_list_file} );
+        }
+        catch {
+            $log->errorf( q{[configuration] %s}, $_ );
+            next;
+        };
 
         if ( $conf->{$db}->{extra_query_list_file} ) {
-            my $eql = ZabbixDBA::Configurator->new(
-                $conf->{$db}->{extra_query_list_file} );
-            push @{ $ql->{query_list} }, @{ $eql->{query_list} };
-            for ( @{ $eql->{query_list} } ) {
-                $ql->{$_} = $eql->{$_};
+            my $eql;
+
+            try {
+                $eql = ZabbixDBA::Configurator->new(
+                    $conf->{$db}->{extra_query_list_file} );
             }
+            catch {
+                $log->error($_);
+            }
+            finally {
+                if ( !@_ ) {
+                    push @{ $ql->{query_list} }, @{ $eql->{query_list} };
+                    for ( @{ $eql->{query_list} } ) {
+                        $ql->{$_} = $eql->{$_};
+                    }
+                }
+            };
         }
+
+        my $pid = $pm->start() and next;
 
         # Starting fork() of main code
         # -----------------------------------------------------------
-        my $pid = $pm->start() and next;
         my $dbh = $dbpool->{$db}->clone();
         my @data;
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
 
             # JSON is required by Zabbix when discovering items
             my $json = { data => [] };
+
             my $result
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
 
             if ( $dbh->errstr() ) {
-                carp 'An error occurred: ' . $dbh->errstr();
+                $log->errorf( q{[item_discovery] %s => %s : %s},
+                    $db, $rule, $dbh->errstr() );
                 next;
             }
 
@@ -113,14 +145,19 @@ while ($running) {
         while ( my ( $item, $v ) = each %{ $ql->{discovery}->{item} } ) {
             my $result
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
+            if ( $dbh->errstr() ) {
+                $log->errorf( q{[item_discovery] %s => %s : %s},
+                    $db, $item, $dbh->errstr() );
+                next;
+            }
 
             for my $row ( @{$result} ) {
-                for ( keys %{ $v->{key} } ) {
+                for ( keys %{ $v->{key_value} } ) {
                     push @data,
                         [
                         $db,
                         sprintf( '%s[%s]', $item, $row->{$_} ),
-                        $row->{ $v->{key}->{$_} }
+                        $row->{ $v->{key_value}->{$_} }
                         ];
                 }
             }
@@ -131,15 +168,19 @@ while ($running) {
                 next;
             }
             my $result
-                = $dbh->selectrow_array( $ql->{$query}->{query} );
+                = $dbh->selectrow_arrayref( $ql->{$query}->{query} );
 
             if ( $dbh->errstr() ) {
-                carp 'An error occurred: ' . $dbh->errstr();
+                $log->error( sprintf q{[query] %s => %s : %s},
+                    $db, $query, $dbh->errstr() );
                 next;
             }
 
             if ( !$result ) {
                 $result = $ql->{$query}->{no_data_found} // next;
+            }
+            else {
+                $result = join q{ }, @{$result};
             }
 
             push @data, [ $db, $query, $result ];
@@ -149,7 +190,12 @@ while ($running) {
         # that require commit/rollback after using Slice in fetch
         $dbh->rollback();
 
-        $sender->send(@data);
+        try {
+            $sender->send(@data);
+        }
+        catch {
+            $log->warnf( q{[sender] %s}, $_ );
+        };
 
         $pm->finish();
 
@@ -161,8 +207,39 @@ while ($running) {
     sleep $conf->{daemon}->{sleep};
 }
 
-sub DESTROY {
+sub get_connection {
+    my ($db) = @_;
+    my $opts = {
+        PrintError => 0,
+        RaiseError => 0,
+        AutoCommit => 0,
+        AutoInactiveDestroy =>
+            1,    # useful when perfroming fork() for DB connections,
+                  # see mode in DBI documentation
+    };
+
+    my $user = $conf->{$db}->{user}     // $conf->{default}->{user};
+    my $pass = $conf->{$db}->{password} // $conf->{default}->{password};
+
+    my $dbh
+        = DBI->connect( $conf->{$db}->{dsn}, $user, $pass, $opts );
+
+    if ( DBI->errstr() ) {
+        $log->errorf( q{[database] connection failed for '%s@%s' : %s},
+            $user, $db, DBI->errstr() );
+        return;
+    }
+
+    $log->infof( q{[database] connected to '%s'}, $db );
+
+    return $dbh;
+}
+
+sub stop {
+    $running = 0;
+    $log->info('Stopping');
     for ( keys %{$dbpool} ) {
+        $log->infof( q{[database] disconnecting from '%s'}, $_ );
         $dbpool->{$_}->disconnect;
     }
     return 1;

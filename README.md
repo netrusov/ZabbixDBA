@@ -63,7 +63,7 @@ rule => {
 ```
 JSON output (formatted) after fetching and processing rows:
 ```
-{"data":[
+tablespaces => {"data":[
 {"{#TSNAME}":"SYSTEM"},
 {"{#TSNAME}":"SYSAUX"},
 {"{#TSNAME}":"UNDOTBS1"},

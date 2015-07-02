@@ -6,16 +6,16 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp qw(confess carp);
 
-use File::Basename qw(basename);
-use FindBin qw($Bin);
-use lib $Bin;
-
 use DBI;
 use Parallel::ForkManager;
 
 use JSON qw(encode_json);
 use Try::Tiny;
 use Time::HiRes qw(gettimeofday tv_interval);
+
+use File::Basename qw(basename);
+use FindBin qw($Bin);
+use lib $Bin;
 
 use Log::Any qw($log);
 use Log::Any::Adapter ( 'File', basename($PROGRAM_NAME) . '.log' );
@@ -104,15 +104,23 @@ while ($running) {
             }
             catch {
                 $log->error($_);
-            }
-            finally {
-                if ( !@_ ) {
+            };
+            if ($eql) {
+                if ( $eql->{query_list} ) {
                     push @{ $ql->{query_list} }, @{ $eql->{query_list} };
                     for ( @{ $eql->{query_list} } ) {
                         $ql->{$_} = $eql->{$_};
                     }
                 }
-            };
+                for ( keys %{ $eql->{discovery}->{rule} } ) {
+                    $ql->{discovery}->{rule}->{$_}
+                        = $eql->{discovery}->{rule}->{$_};
+                }
+                for ( keys %{ $eql->{discovery}->{item} } ) {
+                    $ql->{discovery}->{item}->{$_}
+                        = $eql->{discovery}->{item}->{$_};
+                }
+            }
         }
 
         my $pid = $pm->start() and next;
@@ -139,7 +147,7 @@ while ($running) {
             for my $row ( @{$result} ) {
                 push @{ $json->{data} },
                     { map { sprintf( '{#%s}', $_ ) => $row->{$_} }
-                        @{ $v->{columns} } };
+                        @{ $v->{keys} } };
             }
             push @data, [ $db, $rule, encode_json($json) ];
         }

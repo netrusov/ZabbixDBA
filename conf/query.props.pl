@@ -1,4 +1,4 @@
-{
+{   
     query_list => [
         'alive',                 'archive',
         'uptime',                'dbblockgets',
@@ -342,7 +342,7 @@
                     select tablespace_name tsname, used_percent pct
                     from dba_tablespace_usage_metrics
                 },
-                key_value => { 'TSNAME' => 'PCT' }
+                keys => { 'TSNAME' => 'PCT' }
             },
         },
     },

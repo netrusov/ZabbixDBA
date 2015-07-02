@@ -80,7 +80,7 @@ item => {
         query => q{
             querytext
         },
-        key_value => { 'column0' => 'column1' },
+        keys => { 'column0' => 'column1' },
     }
 }
 ```
@@ -96,7 +96,7 @@ item => {
             select tablespace_name tsname, used_percent pct
             from dba_tablespace_usage_metrics
         },
-        key_value => { 'TSNAME' => 'PCT' }
+        keys => { 'TSNAME' => 'PCT' }
     }
 }
 ```

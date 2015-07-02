@@ -85,8 +85,8 @@ item => {
 }
 ```
 Here:
-- *column0* - **value** of column0 to be put as a parameter for item, i.e.: item[valueof(column0)]
-- *column1* - final item value, i.e.: item[valueof(column0)] = valueof(column1)
+- *column0* - **value** of column0 to be put as a parameter for item, i.e.: itemname[valueof(column0)]
+- *column1* - final item value, i.e.: itemname[valueof(column0)] = valueof(column1)
   
 Example:
 ```

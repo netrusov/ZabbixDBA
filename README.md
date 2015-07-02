@@ -38,7 +38,7 @@ Syntax:
 rule => {
     itemname => {
         query => q{
-            *query*
+            querytext
         },
         keys => [ 'column0', 'column1', 'etc.' ],
     }
@@ -47,7 +47,7 @@ rule => {
 
 Here:
 - *itemname* - Zabbix item name
-- *query* - SQL query text
+- *querytext* - SQL query text
 - *column..* - column names to use as a key for discovery
   
 Example for tablespace discovery:
@@ -78,7 +78,7 @@ Syntax:
 item => {
     itemname => {
         query => q{
-            query
+            querytext
         },
         key_value => { 'column0' => 'column1' },
     }

@@ -15,6 +15,7 @@ use Parallel::ForkManager;
 
 use JSON qw(encode_json);
 use Try::Tiny;
+use Time::HiRes qw(gettimeofday tv_interval);
 
 use Log::Any qw($log);
 use Log::Any::Adapter ( 'File', basename($PROGRAM_NAME) . '.log' );
@@ -118,7 +119,8 @@ while ($running) {
 
         # Starting fork() of main code
         # -----------------------------------------------------------
-        my $dbh = $dbpool->{$db}->clone();
+        my $dbh   = $dbpool->{$db}->clone();
+        my $start = [gettimeofday];
         my @data;
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
 
@@ -152,12 +154,12 @@ while ($running) {
             }
 
             for my $row ( @{$result} ) {
-                for ( keys %{ $v->{key_value} } ) {
+                for ( keys %{ $v->{keys} } ) {
                     push @data,
                         [
                         $db,
                         sprintf( '%s[%s]', $item, $row->{$_} ),
-                        $row->{ $v->{key_value}->{$_} }
+                        $row->{ $v->{keys}->{$_} }
                         ];
                 }
             }
@@ -197,6 +199,11 @@ while ($running) {
             $log->warnf( q{[sender] %s}, $_ );
         };
 
+        undef @data;
+        $log->infof(
+            q{[fork:%d] completed fetching data on '%s', elapsed: %s},
+            $pid, $db, tv_interval( $start, [gettimeofday] ) );
+
         $pm->finish();
 
         # -----------------------------------------------------------
@@ -215,7 +222,7 @@ sub get_connection {
         AutoCommit => 0,
         AutoInactiveDestroy =>
             1,    # useful when perfroming fork() for DB connections,
-                  # see mode in DBI documentation
+                  # see more in DBI documentation
     };
 
     my $user = $conf->{$db}->{user}     // $conf->{default}->{user};

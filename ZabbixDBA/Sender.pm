@@ -26,6 +26,9 @@ sub new {
 }
 
 sub encode {
+    # MIME::Base64::encode_base64() adds newline at the end of string,
+    # but Zabbix doesn't like them, and chomp() doesn't work properly with sprintf.
+    # That's why this subroutine was created
     chomp( my $result = encode_base64(shift) );
     return $result;
 }

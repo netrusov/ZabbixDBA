@@ -333,7 +333,7 @@
                 query => q{
                     select name tsname from gv$tablespace
                 },
-                columns => ['TSNAME'],
+                keys => ['TSNAME'],
             },
         },
         item => {

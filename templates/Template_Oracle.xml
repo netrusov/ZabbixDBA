@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-07-01T16:11:33Z</date>
+    <date>2015-07-02T10:56:42Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -2405,7 +2405,17 @@
             <status>0</status>
             <priority>4</priority>
             <description/>
-            <type>1</type>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template Oracle:dbversion.change()}=1</expression>
+            <name>DB version has been changed</name>
+            <url/>
+            <status>0</status>
+            <priority>1</priority>
+            <description/>
+            <type>0</type>
             <dependencies/>
         </trigger>
         <trigger>

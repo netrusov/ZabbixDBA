@@ -16,15 +16,15 @@ my $url  = 'http://zabbix01/zabbix';
 
 my ( $to, $subject, $body ) = @ARGV;
 
-my ($item_id) = $body =~ m#<td id="item_id">(\d+)</td>#xms;
-my ($status)  = $body =~ m#<th id="status">(\w+)</th>#xms;
+my ($item_id) = $body =~ m#<td id="item_id">(\d+)</td>#ms;
+my ($status)  = $body =~ m#<th id="status">(\w+)</th>#ms;
 
 if ($status) {
     my $style = 'background-color: forestgreen; color: white;';
     if ( $status ne 'OK' ) {
         $style = 'background-color: red;';
     }
-    $body =~ s#<tr id="top">#<tr id="top" style="${style}">#xms;
+    $body =~ s#<tr id="top">#<tr id="top" style="${style}">#ms;
 }
 
 my $message = <<"EOF";

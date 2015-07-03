@@ -16,7 +16,7 @@ Create user ZABBIX (or whatever you want) in database and grant privileges regar
 Here's mine script:
 ```
 CREATE USER ZABBIX
-  IDENTIFIED BY zabbix
+  IDENTIFIED BY <password>
   DEFAULT TABLESPACE USERS
   TEMPORARY TABLESPACE TEMP
   PROFILE DEFAULT

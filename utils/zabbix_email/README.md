@@ -17,5 +17,5 @@ Put **zabbix_email.pl** script to AlertScriptsPath directory and grant privilege
 AlertScriptsPath=/usr/lib/zabbix/alertscripts
 ```
   
-Create new Media Type and name it whatever you want, select type **Script** and enter name of the script.
+Create new Media Type and name it whatever you want, select type **Script** and enter name of the script.  
 Now create new action for this media type and change default message to HTML template that you can find in **email_template.html**

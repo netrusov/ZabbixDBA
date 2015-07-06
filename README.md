@@ -2,7 +2,14 @@
 Perl plugin for Zabbix to monitor RDBMS. Used Orabbix as example.  
   
 ZabbixDBA uses threading of DBI connections which is good for monitoring of multiple database instances.
-    
+Currently there are template and query set only for Oracle database, but Perl DBI supports any type of RDBMS:
+- MySQL
+- MS SQL
+- PostgreSQL
+- DB2
+  
+You can find full list of DBD modules here: https://metacpan.org/search?q=DBD
+  
 Feel free to fork and contribute!
 
 #### Requirements

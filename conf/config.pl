@@ -9,7 +9,7 @@
     default       => {
         user            => 'zabbix',
         password        => 'zabbix',
-        query_list_file => './conf/query.props.pl'
+        query_list_file => '/opt/ZabbixDBA/conf/query.props.pl'
     },
     XXXPRD => { dsn => 'DBI:Oracle:host=xxxdb11;port=1521;sid=XXXPRD', },
     XXXDEV => {

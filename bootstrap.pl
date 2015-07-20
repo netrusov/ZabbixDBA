@@ -218,7 +218,7 @@ while ($running) {
         undef @data;
         $log->infof(
             q{[fork:%d] completed fetching data on '%s', elapsed: %s},
-            $pid, $db, tv_interval( $start, [gettimeofday] ) );
+            $PROCESS_ID, $db, tv_interval( $start, [gettimeofday] ) );
 
         $pm->finish();
 

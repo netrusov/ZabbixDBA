@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-07-02T10:56:42Z</date>
+    <date>2015-07-20T11:49:57Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -164,6 +164,49 @@
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>Blocking Sessions Full Information</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>blocking_sessions_full</key>
+                    <delay>0</delay>
+                    <history>7</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
@@ -456,13 +499,13 @@
                 <item>
                     <name>DB Version</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>dbversion</key>
-                    <delay>86400</delay>
-                    <history>90</history>
-                    <trends>0</trends>
+                    <delay>0</delay>
+                    <history>7</history>
+                    <trends>365</trends>
                     <status>0</status>
                     <value_type>4</value_type>
                     <allowed_hosts/>
@@ -1873,49 +1916,6 @@
                     <logtimefmt/>
                 </item>
                 <item>
-                    <name>Tablespaces</name>
-                    <type>2</type>
-                    <snmp_community>public</snmp_community>
-                    <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
-                    <key>tbl_space</key>
-                    <delay>900</delay>
-                    <history>90</history>
-                    <trends>0</trends>
-                    <status>0</status>
-                    <value_type>4</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <delta>0</delta>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>Oracle</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                </item>
-                <item>
                     <name>Uptime</name>
                     <type>2</type>
                     <snmp_community/>
@@ -2375,11 +2375,11 @@
             <status>0</status>
             <priority>5</priority>
             <description/>
-            <type>0</type>
+            <type>1</type>
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:archive_gap.last(0)}&gt;5</expression>
+            <expression>{Template Oracle:archive_gap.last(0)}&gt;10</expression>
             <name>Archivelog gap</name>
             <url/>
             <status>0</status>
@@ -2399,11 +2399,21 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:blocking_sessions.last(0)}&gt;0</expression>
+            <expression>{Template Oracle:blocking_sessions.avg(#2)}=1</expression>
             <name>Blocking sessions</name>
             <url/>
             <status>0</status>
             <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template Oracle:uptime.last(0)}&lt;300</expression>
+            <name>DB has just been restarted</name>
+            <url/>
+            <status>0</status>
+            <priority>1</priority>
             <description/>
             <type>0</type>
             <dependencies/>
@@ -2422,14 +2432,14 @@
             <expression>{Template Oracle:hitratio_table_proc.avg(60)}&lt;50 or {Template Oracle:hitratio_trigger.avg(60)}&lt;50 or {Template Oracle:hitratio_sqlarea.avg(60)}&lt;50 or {Template Oracle:hitratio_body.avg(60)}&lt;50</expression>
             <name>Hit Ratio</name>
             <url/>
-            <status>1</status>
+            <status>0</status>
             <priority>2</priority>
             <description/>
             <type>0</type>
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:alive.min(300)}&lt;1</expression>
+            <expression>{Template Oracle:alive.sum(5m)}=0</expression>
             <name>No data received for 5 minutes</name>
             <url/>
             <status>0</status>
@@ -2442,18 +2452,8 @@
             <expression>({Template Oracle:pga.last(0)}*100/{Template Oracle:pga_aggregate_target.last(0)})&gt;90</expression>
             <name>PGA alarm</name>
             <url/>
-            <status>1</status>
-            <priority>2</priority>
-            <description/>
-            <type>0</type>
-            <dependencies/>
-        </trigger>
-        <trigger>
-            <expression>{Template Oracle:uptime.last(0)}&lt;300</expression>
-            <name>Uptime</name>
-            <url/>
             <status>0</status>
-            <priority>1</priority>
+            <priority>2</priority>
             <description/>
             <type>0</type>
             <dependencies/>

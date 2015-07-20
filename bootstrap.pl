@@ -13,12 +13,11 @@ use JSON qw(encode_json);
 use Try::Tiny;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-use File::Basename qw(basename);
 use FindBin qw($Bin);
 use lib $Bin;
 
 use Log::Any qw($log);
-use Log::Any::Adapter ( 'File', basename($PROGRAM_NAME) . '.log' );
+use Log::Any::Adapter ( 'File', $PROGRAM_NAME . '.log' );
 
 use ZabbixDBA::Configurator;
 use ZabbixDBA::Sender;
@@ -100,8 +99,8 @@ while ($running) {
         }
         catch {
             $log->errorf( q{[configuration] %s}, $_ );
-            next;
-        };
+            return;
+        } or next;
 
         if ( $conf->{$db}->{extra_query_list_file} ) {
             my $eql;
@@ -131,7 +130,7 @@ while ($running) {
             }
         }
 
-        my $pid = $pm->start() and next;
+        $pm->start() and next;
 
         # Starting fork() of main code
         # -----------------------------------------------------------

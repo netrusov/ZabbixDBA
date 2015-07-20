@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# chkconfig: 35 90 12
+# description: ZabbixDBA monitoring service
+
+. /etc/init.d/functions
+. /opt/ZabbixDBA/settings.sh
+
+perl_bin='/usr/local/bin/perl'
+
+start() {
+    if [[ -e "$LOCKFILE" ]]; then
+		echo 'Service is already running with pid' $(cat "$PIDFILE")
+    else
+        echo -n 'Starting ZabbixDBA service: '
+        $perl_bin /opt/ZabbixDBA/bootstrap.pl start "$CONFIG" &
+        echo $! > "$PIDFILE"
+        touch "$LOCKFILE"
+        success $"ZabbixDBA started"
+        echo
+    fi
+}
+
+stop() {
+    if [[ -e "$LOCKFILE" ]]; then
+        echo -n 'Stopping ZabbixDBA service: '
+        xargs kill -s USR1 < "$PIDFILE"
+        rm -f "$LOCKFILE" "$PIDFILE"
+        success $"ZabbixDBA stopped"
+		echo
+    else
+        echo 'Service is not running'
+    fi  
+}
+
+status() {
+    if [[ -e "$LOCKFILE" ]]; then
+        echo 'Service is running with pid' $(cat "$PIDFILE")
+    else
+        echo 'Service is stopped'
+    fi
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart|reload)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

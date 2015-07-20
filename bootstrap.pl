@@ -82,6 +82,14 @@ while ($running) {
             $dbpool->{$db} = get_connection($db) or next;
         }
 
+        $dbpool->{$db}->do(q{SELECT NULL FROM DUAL});
+
+        if ( $dbpool->{$db}->errstr() ) {
+            $log->errorf( q{[database] connection lost contact for '%s' : %s},
+                $db, $dbpool->{$db}->errstr() );
+            $dbpool->{$db} = get_connection($db) or next;
+        }
+
         my $ql;
 
         try {

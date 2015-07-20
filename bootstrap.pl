@@ -100,6 +100,10 @@ while ($running) {
         catch {
             $log->errorf( q{[configuration] %s}, $_ );
             return;
+
+            # Try::Tiny is acting like a subroutine,
+            # so we need to check return value outside of it
+            # otherwise Perl will raise warning on next used inside of sub
         } or next;
 
         if ( $conf->{$db}->{extra_query_list_file} ) {

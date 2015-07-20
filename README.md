@@ -135,8 +135,8 @@ tablespace_usage[USERS] => 55.542144775390625
   
   
 #### TODO
-- add start/stop scripts
 - reformat code for easy reading and maintenance
+- ~~add start/stop scripts~~
 - ~~add comments~~
 - ~~add logging~~
 - ~~add SIG signal handlers to stop loop gracefully~~

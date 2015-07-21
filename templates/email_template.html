@@ -1,3 +1,4 @@
+<table>
     <tr id="top">
         <th>Status:</th>
         <th id="status">{TRIGGER.STATUS}</th>
@@ -15,14 +16,16 @@
         <td>{TRIGGER.SEVERITY}</td>
     </tr>
     <tr>
-        <td>Trigger URL:</td>
-        <td>{TRIGGER.URL}</td>
-    </tr>
-    <tr>
-        <td>Item values:</td>
+        <td>Item value 1:</td>
         <td>{ITEM.NAME1} ({HOST.NAME1}:{ITEM.KEY1}): {ITEM.VALUE1}</td>
     </tr>
     <tr>
-        <td>Item ID:</td>
-        <td id="item_id">{ITEM.ID1}</td>
+        <td>Item value 2:</td>
+        <td>{ITEM.NAME2} ({HOST.NAME2}:{ITEM.KEY2}): {ITEM.VALUE2}</td>
     </tr>
+    <tr>
+        <td>Item value 3:</td>
+        <td>{ITEM.NAME3} ({HOST.NAME3}:{ITEM.KEY3}): {ITEM.VALUE3}</td>
+    </tr>
+</table>
+<span style="display:none;" id="item_ids">{ITEM.ID1},{ITEM.ID2},{ITEM.ID3},{ITEM.ID4},{ITEM.ID5},{ITEM.ID6},{ITEM.ID7},{ITEM.ID8},{ITEM.ID9}</span>

@@ -10,14 +10,15 @@ use File::Spec::Functions qw(catfile);
 use WWW::Mechanize;
 use MIME::Lite;
 
-my $user = 'Admin';
-my $pass = 's3cr3t';
-my $url  = 'http://zabbix01/zabbix';
+my $user      = 'Admin';
+my $pass      = 's3cr3t';
+my $login_url = 'http://zabbix01/zabbix';
 
 my ( $to, $subject, $body ) = @ARGV;
 
-my ($item_id) = $body =~ m#<td id="item_id">(\d+)</td>#ms;
-my ($status)  = $body =~ m#<th id="status">(\w+)</th>#ms;
+my ($item_ids)
+    = $body =~ m#<span style="display:none;" id="item_ids">(.*)</span>#ms;
+my ($status) = $body =~ m#<th id="status">(\w+)</th>#ms;
 
 if ($status) {
     my $style = 'background-color: forestgreen; color: white;';
@@ -34,25 +35,27 @@ my $message = <<"EOF";
     <meta charset="UTF-8">
 </head>
 <body>
-    <table id="info">
     ${body}
-    </table>
-<br>
+    <br>
 EOF
 
 my ( $graph_url, $graph_png );
 
-if ($item_id) {
-    $graph_url = sprintf q{%s/chart.php?itemids[]=%d}, $url, $item_id;
+my @items = grep { !m/UNKNOWN/ms } split m/,/ms, $item_ids;
+
+if (@items) {
+    $graph_url = sprintf q{%s/chart.php?%s}, $login_url, join q{&},
+        map { sprintf 'itemids[]=%d', $_ } @items;
+
     $graph_png = catfile( dirname($PROGRAM_NAME),
-        sprintf( 'chart%d.png', $item_id ) );
+        sprintf( '.chart%d.png', $PROCESS_ID ) );
 
     if ( -f $graph_png ) {
         unlink $graph_png;
     }
 
     my $a = WWW::Mechanize->new();
-    $a->get($url);
+    $a->get($login_url);
 
     $a->submit_form(
         form_number => 1,
@@ -77,7 +80,7 @@ my $msg = MIME::Lite->new(
     Data     => $message,
 );
 
-if ($item_id) {
+if ($graph_png) {
     $msg->attach(
         Type => 'image/png',
         Path => $graph_png,
@@ -87,6 +90,6 @@ if ($item_id) {
 
 $msg->send;
 
-if ($item_id) {
+if ($graph_png) {
     unlink $graph_png;
 }

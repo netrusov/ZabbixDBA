@@ -27,7 +27,7 @@ stop() {
         xargs kill -s USR1 < "$PIDFILE"
         rm -f "$LOCKFILE" "$PIDFILE"
         success $"ZabbixDBA stopped"
-		echo
+        echo
     else
         echo 'Service is not running'
     fi  

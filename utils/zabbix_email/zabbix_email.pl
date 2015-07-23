@@ -18,12 +18,31 @@ my ( $to, $subject, $body ) = @ARGV;
 
 my ($item_ids)
     = $body =~ m#<span style="display:none;" id="item_ids">(.*)</span>#ms;
-my ($status) = $body =~ m#<th id="status">(\w+)</th>#ms;
+my ($status)   = $body =~ m#<th id="status">(.*)</th>#ms;
+my ($severity) = $body =~ m#<td id="severity">(.*)</td>#ms;
 
 if ($status) {
     my $style = 'background-color: forestgreen; color: white;';
-    if ( $status ne 'OK' ) {
+    if ( $status !~ m/OK/msi ) {
         $style = 'background-color: red;';
+        if ( $severity =~ m/Not classified/msi ) {
+            $style = 'background-color: lightgray;';
+        }
+        if ( $severity =~ m/Information/msi ) {
+            $style = 'background-color: lightblue;';
+        }
+        if ( $severity =~ m/Warning/msi ) {
+            $style = 'background-color: gold;';
+        }
+        if ( $severity =~ m/Average/msi ) {
+            $style = 'background-color: lightsalmon;';
+        }
+        if ( $severity =~ m/High/msi ) {
+            $style = 'background-color: salmon;';
+        }
+        if ( $severity =~ m/Disaster/msi ) {
+            $style = 'background-color: red;';
+        }
     }
     $body =~ s#<tr id="top">#<tr id="top" style="${style}">#ms;
 }
@@ -41,7 +60,7 @@ EOF
 
 my ( $graph_url, $graph_png );
 
-my @items = grep { !m/UNKNOWN/ms } split m/,/ms, $item_ids;
+my @items = grep { !m/UNKNOWN/msi } split m/,/ms, $item_ids;
 
 if (@items) {
     $graph_url = sprintf q{%s/chart.php?%s}, $login_url, join q{&},

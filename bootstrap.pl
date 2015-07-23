@@ -43,7 +43,7 @@ local $SIG{USR1} = \&stop;
 my $pm = Parallel::ForkManager->new(20);
 my ( $conf, $sender, $dbpool );
 
-$log->info('[main] starting ZabbixDBA monitoring plugin');
+$log->info('[INFO][main] starting ZabbixDBA monitoring plugin');
 
 while ($running) {
 
@@ -53,7 +53,7 @@ while ($running) {
         $conf = ZabbixDBA::Configurator->new($confile);
     }
     catch {
-        $log->errorf( q{[configuration] %s}, $_ );
+        $log->errorf( q{[ERROR][configuration] %s}, $_ );
         confess $_;
     };
 
@@ -64,14 +64,14 @@ while ($running) {
                 @{ $conf->{zabbix_server_list} } );
     }
     catch {
-        $log->errorf( q{[configuration] %s}, $_ );
+        $log->errorf( q{[ERROR][configuration] %s}, $_ );
         confess $_;
     };
 
     for my $db ( @{ $conf->{database_list} } ) {
         if ( !$conf->{$db} || !$conf->{$db}->{dsn} ) {
             $log->warnf(
-                q{[database] configuration of '%s' is not described in '%s'},
+                q{[WARN][database] configuration of '%s' is not described in '%s'},
                 $db, $confile
             );
             next;
@@ -85,7 +85,8 @@ while ($running) {
         $dbpool->{$db}->do(q{select count(*) from dual where 1=0});
 
         if ( $dbpool->{$db}->errstr() ) {
-            $log->errorf( q{[database] connection lost contact for '%s' : %s},
+            $log->errorf(
+                q{[ERROR][database] connection lost contact for '%s' : %s},
                 $db, $dbpool->{$db}->errstr() );
             $dbpool->{$db} = get_connection($db) or next;
         }
@@ -99,7 +100,7 @@ while ($running) {
                     // $conf->{default}->{query_list_file} );
         }
         catch {
-            $log->errorf( q{[configuration] %s}, $_ );
+            $log->errorf( q{[ERROR][configurator] %s}, $_ );
             return;
 
             # Try::Tiny is acting like a subroutine,
@@ -115,7 +116,7 @@ while ($running) {
                     $conf->{$db}->{extra_query_list_file} );
             }
             catch {
-                $log->error($_);
+                $log->errorf( q{[ERROR][configurator] %s}, $_ );
             };
             if ($eql) {
                 if ( $eql->{query_list} ) {
@@ -151,7 +152,7 @@ while ($running) {
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
 
             if ( $dbh->errstr() ) {
-                $log->errorf( q{[item_discovery] %s => %s : %s},
+                $log->errorf( q{[ERROR][rule_discovery] %s => %s : %s},
                     $db, $rule, $dbh->errstr() );
                 next;
             }
@@ -168,7 +169,7 @@ while ($running) {
             my $result
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
             if ( $dbh->errstr() ) {
-                $log->errorf( q{[item_discovery] %s => %s : %s},
+                $log->errorf( q{[ERROR][item_discovery] %s => %s : %s},
                     $db, $item, $dbh->errstr() );
                 next;
             }
@@ -193,7 +194,7 @@ while ($running) {
                 = $dbh->selectrow_arrayref( $ql->{$query}->{query} );
 
             if ( $dbh->errstr() ) {
-                $log->error( sprintf q{[query] %s => %s : %s},
+                $log->error( sprintf q{[ERROR][query] %s => %s : %s},
                     $db, $query, $dbh->errstr() );
                 next;
             }
@@ -216,12 +217,12 @@ while ($running) {
             $sender->send(@data);
         }
         catch {
-            $log->warnf( q{[sender] %s}, $_ );
+            $log->warnf( q{[WARN][sender] %s}, $_ );
         };
 
         undef @data;
         $log->infof(
-            q{[fork:%d] completed fetching data on '%s', elapsed: %s},
+            q{[INFO][fork:%d] completed fetching data on '%s', elapsed: %s},
             $PROCESS_ID, $db, tv_interval( $start, [gettimeofday] ) );
 
         $pm->finish();
@@ -252,21 +253,21 @@ sub get_connection {
         = DBI->connect( $conf->{$db}->{dsn}, $user, $pass, $opts );
 
     if ( DBI->errstr() ) {
-        $log->errorf( q{[database] connection failed for '%s@%s' : %s},
+        $log->errorf( q{[ERROR][database] connection failed for '%s@%s' : %s},
             $user, $db, DBI->errstr() );
         return;
     }
 
-    $log->infof( q{[database] connected to '%s'}, $db );
+    $log->infof( q{[INFO][database] connected to '%s'}, $db );
 
     return $dbh;
 }
 
 sub stop {
     $running = 0;
-    $log->info('[main] stopping ZabbixDBA monitoring plugin');
+    $log->info(q{[INFO][main] stopping ZabbixDBA monitoring plugin});
     for ( keys %{$dbpool} ) {
-        $log->infof( q{[database] disconnecting from '%s'}, $_ );
+        $log->infof( q{[INFO][database] disconnecting from '%s'}, $_ );
         $dbpool->{$_}->disconnect;
     }
     return 1;

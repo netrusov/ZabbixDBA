@@ -30,7 +30,7 @@ if ( scalar @ARGV < 2 ) {
 
 my ( $command, $confile ) = @ARGV;
 
-if ( $command ne 'start' ) {
+if ( $command !~ m/start/msi ) {
     confess 'Usage: perl bootstrap.pl start /path/to/config.pl';
 }
 my $running = 1;
@@ -43,7 +43,7 @@ local $SIG{USR1} = \&stop;
 my $pm = Parallel::ForkManager->new(20);
 my ( $conf, $sender, $dbpool );
 
-$log->info('Starting');
+$log->info('[main] starting ZabbixDBA monitoring plugin');
 
 while ($running) {
 
@@ -81,7 +81,8 @@ while ($running) {
             $dbpool->{$db} = get_connection($db) or next;
         }
 
-        $dbpool->{$db}->do(q{SELECT NULL FROM DUAL});
+        # Can be used both for Oracle and MySQL
+        $dbpool->{$db}->do(q{select count(*) from dual where 1=0});
 
         if ( $dbpool->{$db}->errstr() ) {
             $log->errorf( q{[database] connection lost contact for '%s' : %s},
@@ -263,7 +264,7 @@ sub get_connection {
 
 sub stop {
     $running = 0;
-    $log->info('Stopping');
+    $log->info('[main] stopping ZabbixDBA monitoring plugin');
     for ( keys %{$dbpool} ) {
         $log->infof( q{[database] disconnecting from '%s'}, $_ );
         $dbpool->{$_}->disconnect;

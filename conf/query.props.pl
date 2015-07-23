@@ -14,6 +14,8 @@
         'pool_dict_cache',        'pool_free_mem',
         'pool_lib_cache',         'pool_sql_area',
         'pool_misc',              'sga_buffer_cache',
+        'session',                'session_system',
+        'session_active',         'session_inactive',
         'sga_fixed',              'sga_java_pool',
         'sga_large_pool',         'sga_log_buffer',
         'waits_directpath_read',  'waits_file_io',
@@ -216,6 +218,32 @@
             , 'dictionary cache'
             , 'free memory'
             , 'sql area')
+        },
+    },
+    session => {
+        query => q{
+            select count (*) from gv$session
+        },
+    },
+    session_system => {
+        query => q{
+            select count (*)
+            from gv$session
+            where type = 'BACKGROUND'
+        },
+    },
+    session_active => {
+        query => q{
+            select count (*)
+            from gv$session
+            where type != 'BACKGROUND' and status = 'ACTIVE'
+        },
+    },
+    session_inactive => {
+        query => q{
+            select count (*)
+            from gv$session
+            where type != 'BACKGROUND' and status = 'INACTIVE'
         },
     },
     sga_buffer_cache => {

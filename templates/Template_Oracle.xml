@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-07-20T11:49:57Z</date>
+    <date>2015-07-23T10:08:14Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -2364,7 +2364,147 @@
             </discovery_rules>
             <macros/>
             <templates/>
-            <screens/>
+            <screens>
+                <screen>
+                    <name>Database performance</name>
+                    <hsize>2</hsize>
+                    <vsize>3</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>1</x>
+                            <y>1</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <style>0</style>
+                            <url/>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <resource>
+                                <name>Archivelog</name>
+                                <host>Template Oracle</host>
+                            </resource>
+                            <max_columns>3</max_columns>
+                            <application/>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>1</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <style>0</style>
+                            <url/>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <resource>
+                                <name>Physical I/O</name>
+                                <host>Template Oracle</host>
+                            </resource>
+                            <max_columns>3</max_columns>
+                            <application/>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>1</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <style>0</style>
+                            <url/>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <resource>
+                                <name>Shared Pool</name>
+                                <host>Template Oracle</host>
+                            </resource>
+                            <max_columns>3</max_columns>
+                            <application/>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>2</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <style>0</style>
+                            <url/>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <resource>
+                                <name>Events Waits</name>
+                                <host>Template Oracle</host>
+                            </resource>
+                            <max_columns>3</max_columns>
+                            <application/>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>1</x>
+                            <y>2</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <style>0</style>
+                            <url/>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <resource>
+                                <name>Sessions</name>
+                                <host>Template Oracle</host>
+                            </resource>
+                            <max_columns>3</max_columns>
+                            <application/>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <style>0</style>
+                            <url/>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <resource>
+                                <name>SGA Memory Usage</name>
+                                <host>Template Oracle</host>
+                            </resource>
+                            <max_columns>3</max_columns>
+                            <application/>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+            </screens>
         </template>
     </templates>
     <triggers>
@@ -2449,7 +2589,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>({Template Oracle:pga.last(0)}*100/{Template Oracle:pga_aggregate_target.last(0)})&gt;90</expression>
+            <expression>({Template Oracle:pga.last(0)}*100/{Template Oracle:pga_aggregate_target.last(0)})&gt;95</expression>
             <name>PGA alarm</name>
             <url/>
             <status>0</status>
@@ -2466,7 +2606,7 @@
             <height>200</height>
             <yaxismin>0.0000</yaxismin>
             <yaxismax>100.0000</yaxismax>
-            <show_work_period>1</show_work_period>
+            <show_work_period>0</show_work_period>
             <show_triggers>0</show_triggers>
             <type>0</type>
             <show_legend>1</show_legend>
@@ -2511,7 +2651,7 @@
             <ymax_item_1>0</ymax_item_1>
             <graph_items>
                 <graph_item>
-                    <sortorder>6</sortorder>
+                    <sortorder>5</sortorder>
                     <drawtype>1</drawtype>
                     <color>00CCCC</color>
                     <yaxisside>0</yaxisside>
@@ -2523,7 +2663,7 @@
                     </item>
                 </graph_item>
                 <graph_item>
-                    <sortorder>5</sortorder>
+                    <sortorder>4</sortorder>
                     <drawtype>1</drawtype>
                     <color>888888</color>
                     <yaxisside>0</yaxisside>
@@ -2535,7 +2675,7 @@
                     </item>
                 </graph_item>
                 <graph_item>
-                    <sortorder>4</sortorder>
+                    <sortorder>3</sortorder>
                     <drawtype>1</drawtype>
                     <color>009900</color>
                     <yaxisside>0</yaxisside>
@@ -2547,7 +2687,7 @@
                     </item>
                 </graph_item>
                 <graph_item>
-                    <sortorder>3</sortorder>
+                    <sortorder>2</sortorder>
                     <drawtype>1</drawtype>
                     <color>FFFF00</color>
                     <yaxisside>0</yaxisside>
@@ -2559,7 +2699,7 @@
                     </item>
                 </graph_item>
                 <graph_item>
-                    <sortorder>2</sortorder>
+                    <sortorder>1</sortorder>
                     <drawtype>1</drawtype>
                     <color>FF00FF</color>
                     <yaxisside>0</yaxisside>
@@ -2583,7 +2723,7 @@
                     </item>
                 </graph_item>
                 <graph_item>
-                    <sortorder>7</sortorder>
+                    <sortorder>6</sortorder>
                     <drawtype>1</drawtype>
                     <color>FF9999</color>
                     <yaxisside>0</yaxisside>
@@ -2870,8 +3010,8 @@
             <height>200</height>
             <yaxismin>0.0000</yaxismin>
             <yaxismax>100.0000</yaxismax>
-            <show_work_period>1</show_work_period>
-            <show_triggers>1</show_triggers>
+            <show_work_period>0</show_work_period>
+            <show_triggers>0</show_triggers>
             <type>1</type>
             <show_legend>1</show_legend>
             <show_3d>0</show_3d>
@@ -2940,7 +3080,7 @@
             <graph_items>
                 <graph_item>
                     <sortorder>0</sortorder>
-                    <drawtype>1</drawtype>
+                    <drawtype>0</drawtype>
                     <color>009900</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
@@ -2952,7 +3092,7 @@
                 </graph_item>
                 <graph_item>
                     <sortorder>1</sortorder>
-                    <drawtype>1</drawtype>
+                    <drawtype>0</drawtype>
                     <color>CC0000</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
@@ -2964,7 +3104,7 @@
                 </graph_item>
                 <graph_item>
                     <sortorder>2</sortorder>
-                    <drawtype>1</drawtype>
+                    <drawtype>0</drawtype>
                     <color>00CCCC</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
@@ -2976,7 +3116,7 @@
                 </graph_item>
                 <graph_item>
                     <sortorder>3</sortorder>
-                    <drawtype>1</drawtype>
+                    <drawtype>0</drawtype>
                     <color>CC00CC</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
@@ -2988,7 +3128,7 @@
                 </graph_item>
                 <graph_item>
                     <sortorder>5</sortorder>
-                    <drawtype>1</drawtype>
+                    <drawtype>0</drawtype>
                     <color>0000CC</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
@@ -3000,7 +3140,7 @@
                 </graph_item>
                 <graph_item>
                     <sortorder>4</sortorder>
-                    <drawtype>1</drawtype>
+                    <drawtype>0</drawtype>
                     <color>CCCC00</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>

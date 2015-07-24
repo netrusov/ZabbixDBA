@@ -5,33 +5,31 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use Carp qw(confess carp);
+use FindBin qw($Bin);
+use lib $Bin;
 
 use DBI;
 use Parallel::ForkManager;
 
-use JSON qw(encode_json);
-use Try::Tiny;
-use Time::HiRes qw(gettimeofday tv_interval);
-
-use FindBin qw($Bin);
-use lib $Bin;
-
 use Log::Any qw($log);
 use Log::Any::Adapter ( 'File', $PROGRAM_NAME . '.log' );
+use Time::HiRes qw(gettimeofday tv_interval);
+use Try::Tiny;
 
 use ZabbixDBA::Configurator;
+use ZabbixDBA::Discoverer;
 use ZabbixDBA::Sender;
 
-our $VERSION = '1.011';
+our $VERSION = '1.100';
 
 if ( scalar @ARGV < 2 ) {
-    confess 'Usage: perl bootstrap.pl start /path/to/config.pl';
+    confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
 }
 
 my ( $command, $confile ) = @ARGV;
 
 if ( $command !~ m/start/msi ) {
-    confess 'Usage: perl bootstrap.pl start /path/to/config.pl';
+    confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
 }
 my $running = 1;
 
@@ -40,10 +38,20 @@ local $SIG{HUP}  = \&stop;
 local $SIG{ALRM} = \&stop;
 local $SIG{USR1} = \&stop;
 
-my $pm = Parallel::ForkManager->new(20);
 my ( $conf, $sender, $dbpool );
+my $discovery = ZabbixDBA::Discoverer->new();
 
-$log->info('[INFO][main] starting ZabbixDBA monitoring plugin');
+my $pm = Parallel::ForkManager->new(20);
+
+$pm->run_on_finish(
+    sub {
+        if ( $_[5] ) {
+            delete $dbpool->{ $_[5]->{db} };
+        }
+    }
+);
+
+$log->info(q{[INFO][main] starting ZabbixDBA monitoring plugin});
 
 while ($running) {
 
@@ -81,8 +89,7 @@ while ($running) {
             $dbpool->{$db} = get_connection($db) or next;
         }
 
-        # Can be used both for Oracle and MySQL
-        $dbpool->{$db}->do(q{select count(*) from dual where 1=0});
+        $dbpool->{$db}->ping();
 
         if ( $dbpool->{$db}->errstr() ) {
             $log->errorf(
@@ -118,29 +125,20 @@ while ($running) {
             catch {
                 $log->errorf( q{[ERROR][configurator] %s}, $_ );
             };
-            if ($eql) {
-                if ( $eql->{query_list} ) {
-                    push @{ $ql->{query_list} }, @{ $eql->{query_list} };
-                    for ( @{ $eql->{query_list} } ) {
-                        $ql->{$_} = $eql->{$_};
-                    }
-                }
-                for ( keys %{ $eql->{discovery}->{rule} } ) {
-                    $ql->{discovery}->{rule}->{$_}
-                        = $eql->{discovery}->{rule}->{$_};
-                }
-                for ( keys %{ $eql->{discovery}->{item} } ) {
-                    $ql->{discovery}->{item}->{$_}
-                        = $eql->{discovery}->{item}->{$_};
-                }
-            }
+
+            $ql->merge($eql);
         }
 
         $pm->start() and next;
 
         # Starting fork() of main code
         # -----------------------------------------------------------
-        my $dbh   = $dbpool->{$db}->clone();
+        my $dbh = $dbpool->{$db}->clone();
+        if ( !$dbh ) {
+            $log->errorf( q{[ERROR][database] method 'clone' failed for '%s'},
+                $db );
+            $pm->finish( 0, { db => $db } );
+        }
         my $start = [gettimeofday];
         my @data;
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
@@ -157,12 +155,7 @@ while ($running) {
                 next;
             }
 
-            for my $row ( @{$result} ) {
-                push @{ $json->{data} },
-                    { map { sprintf( '{#%s}', $_ ) => $row->{$_} }
-                        @{ $v->{keys} } };
-            }
-            push @data, [ $db, $rule, encode_json($json) ];
+            push @data, $discovery->rule( $db, $rule, $result, $v->{keys} );
         }
 
         while ( my ( $item, $v ) = each %{ $ql->{discovery}->{item} } ) {
@@ -173,17 +166,7 @@ while ($running) {
                     $db, $item, $dbh->errstr() );
                 next;
             }
-
-            for my $row ( @{$result} ) {
-                for ( keys %{ $v->{keys} } ) {
-                    push @data,
-                        [
-                        $db,
-                        sprintf( '%s[%s]', $item, $row->{$_} ),
-                        $row->{ $v->{keys}->{$_} }
-                        ];
-                }
-            }
+            push @data, $discovery->item( $db, $item, $result, $v->{keys} );
         }
 
         for my $query ( @{ $ql->{query_list} } ) {
@@ -225,7 +208,7 @@ while ($running) {
             q{[INFO][fork:%d] completed fetching data on '%s', elapsed: %s},
             $PROCESS_ID, $db, tv_interval( $start, [gettimeofday] ) );
 
-        $pm->finish();
+        $pm->finish(1);
 
         # -----------------------------------------------------------
     }
@@ -250,15 +233,26 @@ sub get_connection {
     my $pass = $conf->{$db}->{password} // $conf->{default}->{password};
 
     my $dbh
-        = DBI->connect( $conf->{$db}->{dsn}, $user, $pass, $opts );
+        = DBI->connect_cached( $conf->{$db}->{dsn}, $user, $pass, $opts );
+
+    my $alive = 1;
 
     if ( DBI->errstr() ) {
         $log->errorf( q{[ERROR][database] connection failed for '%s@%s' : %s},
             $user, $db, DBI->errstr() );
-        return;
+        $alive = 0;
     }
 
-    $log->infof( q{[INFO][database] connected to '%s'}, $db );
+    try {
+        $sender->send( [ $db, 'alive', $alive ] );
+    }
+    catch {
+        $log->warnf( q{[WARN][sender] %s}, $_ );
+    };
+
+    if ($alive) {
+        $log->infof( q{[INFO][database] connected to '%s'}, $db );
+    }
 
     return $dbh;
 }

@@ -53,6 +53,7 @@ case "$1" in
         ;;
   restart|reload)
         stop
+        sleep 3
         start
         ;;
   *)

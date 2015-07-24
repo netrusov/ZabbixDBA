@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-07-23T10:08:14Z</date>
+    <date>2015-07-24T10:14:57Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -2509,16 +2509,6 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template Oracle:alive.last(0)}&lt;&gt;1</expression>
-            <name>Alive</name>
-            <url/>
-            <status>0</status>
-            <priority>5</priority>
-            <description/>
-            <type>1</type>
-            <dependencies/>
-        </trigger>
-        <trigger>
             <expression>{Template Oracle:archive_gap.last(0)}&gt;10</expression>
             <name>Archivelog gap</name>
             <url/>
@@ -2530,7 +2520,7 @@
         </trigger>
         <trigger>
             <expression>{Template Oracle:archive.last(0)}&gt;1024</expression>
-            <name>Archivelog switch</name>
+            <name>Archivelog generation is too fast</name>
             <url/>
             <status>0</status>
             <priority>2</priority>
@@ -2570,7 +2560,7 @@
         </trigger>
         <trigger>
             <expression>{Template Oracle:hitratio_table_proc.avg(60)}&lt;50 or {Template Oracle:hitratio_trigger.avg(60)}&lt;50 or {Template Oracle:hitratio_sqlarea.avg(60)}&lt;50 or {Template Oracle:hitratio_body.avg(60)}&lt;50</expression>
-            <name>Hit Ratio</name>
+            <name>Hit Ratio is less than 50%</name>
             <url/>
             <status>0</status>
             <priority>2</priority>
@@ -2579,18 +2569,18 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:alive.sum(5m)}=0</expression>
-            <name>No data received for 5 minutes</name>
+            <expression>{Template Oracle:alive.last(0)}=0 or {Template Oracle:alive.nodata(5m)}=1</expression>
+            <name>Instance is down or not accessible</name>
             <url/>
             <status>0</status>
-            <priority>4</priority>
+            <priority>5</priority>
             <description/>
             <type>0</type>
             <dependencies/>
         </trigger>
         <trigger>
             <expression>({Template Oracle:pga.last(0)}*100/{Template Oracle:pga_aggregate_target.last(0)})&gt;95</expression>
-            <name>PGA alarm</name>
+            <name>PGA almost fully commited</name>
             <url/>
             <status>0</status>
             <priority>2</priority>

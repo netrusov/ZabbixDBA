@@ -1,6 +1,6 @@
-{   
+{
     query_list => [
-        'alive',                  'archive',
+        'archive',
         'uptime',                 'dbblockgets',
         'dbconsistentgets',       'dbphysicalreads',
         'dbblockchanges',         'dbhitratio',
@@ -24,12 +24,6 @@
         'waits_sqlnet',           'blocking_sessions',
         'blocking_sessions_full', 'dbversion'
     ],
-    alive => {
-        query => q{
-            select 1 from dual
-        },
-        no_data_found => 0,
-    },
     archive => {
         query => q{
             select nvl (avg ( (blocks * block_size) / 1024 / 1024), 0)

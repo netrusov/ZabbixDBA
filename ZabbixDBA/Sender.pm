@@ -6,8 +6,6 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp qw(confess carp);
 
-our $VERSION = '1.010';
-
 use IO::Socket::INET;
 use MIME::Base64 qw(encode_base64);
 
@@ -29,7 +27,7 @@ sub new {
     return bless $self, $class;
 }
 
-sub encode {
+sub _encode {
 
 # MIME::Base64::encode_base64() adds newline at the end of string,
 # but Zabbix doesn't like them, and chomp() doesn't work properly with sprintf.
@@ -43,7 +41,7 @@ sub send {
     for my $sever ( values %{$self} ) {
 
         for (@data) {
-            if ( !ref $_ ) {
+            if ( !ref ) {
                 next;
             }
             my $socket = IO::Socket::INET->new(
@@ -60,7 +58,7 @@ sub send {
             }
             my ( $host, $key, $data ) = @{$_};
             my $data_base64 = sprintf $html_template,
-                encode($host), encode($key), encode($data);
+                _encode($host), _encode($key), _encode($data);
             $socket->send($data_base64);
             $socket->close();
         }

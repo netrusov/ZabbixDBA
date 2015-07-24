@@ -6,8 +6,6 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp qw(confess);
 
-our $VERSION = '1.001';
-
 sub new {
     my ( $class, $file ) = @_;
 
@@ -23,6 +21,29 @@ sub new {
     }
 
     return bless $self, $class;
+}
+
+sub merge {
+
+    # Hope this will work fine
+    my ( $self, $source ) = @_;
+
+    if ( !$source ) { return; }
+
+    for ( keys %{$source} ) {
+        if ( $self->{$_} ) {
+            if ( ref $source->{$_} eq 'HASH' ) {
+                merge( $source->{$_}, $self->{$_} );
+            }
+            if ( ref $source->{$_} eq 'ARRAY' ) {
+                push @{ $self->{$_} }, @{ $source->{$_} };
+            }
+        }
+        else {
+            $self->{$_} = $source->{$_};
+        }
+    }
+    return 1;
 }
 
 1;

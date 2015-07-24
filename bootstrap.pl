@@ -98,6 +98,13 @@ while ($running) {
             $dbpool->{$db} = get_connection($db) or next;
         }
 
+        try {
+            $sender->send( [ $db, 'alive', 1 ] );
+        }
+        catch {
+            $log->warnf( q{[WARN][sender] %s}, $_ );
+        };
+
         my $ql;
 
         try {

@@ -51,7 +51,8 @@ $pm->run_on_finish(
     }
 );
 
-$log->info(q{[INFO][main] starting ZabbixDBA monitoring plugin});
+$log->infof( q{[INFO][main:%d] starting ZabbixDBA monitoring plugin},
+    $PROCESS_ID );
 
 while ($running) {
 
@@ -61,7 +62,7 @@ while ($running) {
         $conf = ZabbixDBA::Configurator->new($confile);
     }
     catch {
-        $log->errorf( q{[ERROR][configuration] %s}, $_ );
+        $log->errorf( q{[ERROR][configurator] %s}, $_ );
         confess $_;
     };
 
@@ -72,14 +73,14 @@ while ($running) {
                 @{ $conf->{zabbix_server_list} } );
     }
     catch {
-        $log->errorf( q{[ERROR][configuration] %s}, $_ );
+        $log->errorf( q{[ERROR][configurator] %s}, $_ );
         confess $_;
     };
 
     for my $db ( @{ $conf->{database_list} } ) {
         if ( !$conf->{$db} || !$conf->{$db}->{dsn} ) {
             $log->warnf(
-                q{[WARN][database] configuration of '%s' is not described in '%s'},
+                q{[WARN][configurator] configuration of '%s' is not described in '%s'},
                 $db, $confile
             );
             next;
@@ -93,7 +94,7 @@ while ($running) {
 
         if ( $dbpool->{$db}->errstr() ) {
             $log->errorf(
-                q{[ERROR][database] connection lost contact for '%s' : %s},
+                q{[ERROR][dbi] connection lost contact for '%s' : %s},
                 $db, $dbpool->{$db}->errstr() );
             $dbpool->{$db} = get_connection($db) or next;
         }
@@ -142,22 +143,18 @@ while ($running) {
         # -----------------------------------------------------------
         my $dbh = $dbpool->{$db}->clone();
         if ( !$dbh ) {
-            $log->errorf( q{[ERROR][database] method 'clone' failed for '%s'},
+            $log->errorf( q{[ERROR][dbi] method 'clone' failed for '%s'},
                 $db );
             $pm->finish( 0, { db => $db } );
         }
         my $start = [gettimeofday];
         my @data;
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
-
-            # JSON is required by Zabbix when discovering items
-            my $json = { data => [] };
-
             my $result
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
 
             if ( $dbh->errstr() ) {
-                $log->errorf( q{[ERROR][rule_discovery] %s => %s : %s},
+                $log->errorf( q{[ERROR][dbi] %s => %s : %s},
                     $db, $rule, $dbh->errstr() );
                 next;
             }
@@ -169,7 +166,7 @@ while ($running) {
             my $result
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
             if ( $dbh->errstr() ) {
-                $log->errorf( q{[ERROR][item_discovery] %s => %s : %s},
+                $log->errorf( q{[ERROR][dbi] %s => %s : %s},
                     $db, $item, $dbh->errstr() );
                 next;
             }
@@ -184,7 +181,7 @@ while ($running) {
                 = $dbh->selectrow_arrayref( $ql->{$query}->{query} );
 
             if ( $dbh->errstr() ) {
-                $log->error( sprintf q{[ERROR][query] %s => %s : %s},
+                $log->error( sprintf q{[ERROR][dbi] %s => %s : %s},
                     $db, $query, $dbh->errstr() );
                 next;
             }
@@ -196,7 +193,7 @@ while ($running) {
                 $result = join q{ }, @{$result};
             }
 
-            push @data, [ $db, $query, $result ];
+            push @data, [ $ql->{$query}->{send_to} // $db, $query, $result ];
         }
 
         # Issuing rollback due to some internal DBI methods
@@ -245,7 +242,7 @@ sub get_connection {
     my $alive = 1;
 
     if ( DBI->errstr() ) {
-        $log->errorf( q{[ERROR][database] connection failed for '%s@%s' : %s},
+        $log->errorf( q{[ERROR][dbi] connection failed for '%s@%s' : %s},
             $user, $db, DBI->errstr() );
         $alive = 0;
     }
@@ -258,7 +255,8 @@ sub get_connection {
     };
 
     if ($alive) {
-        $log->infof( q{[INFO][database] connected to '%s'}, $db );
+        $log->infof( q{[INFO][dbi] connected to '%s@%s' (%s)},
+            $user, $db, $conf->{$db}->{dsn} );
     }
 
     return $dbh;
@@ -266,9 +264,10 @@ sub get_connection {
 
 sub stop {
     $running = 0;
-    $log->info(q{[INFO][main] stopping ZabbixDBA monitoring plugin});
+    $log->infof( q{[INFO][main:%d] stopping ZabbixDBA monitoring plugin},
+        $PROCESS_ID );
     for ( keys %{$dbpool} ) {
-        $log->infof( q{[INFO][database] disconnecting from '%s'}, $_ );
+        $log->infof( q{[INFO][dbi] disconnecting from '%s'}, $_ );
         $dbpool->{$_}->disconnect;
     }
     return 1;

@@ -186,7 +186,7 @@ while ($running) {
                 next;
             }
 
-            if ( !$result ) {
+            if ( !$result || !@{$result} ) {
                 $result = $ql->{$query}->{no_data_found} // next;
             }
             else {

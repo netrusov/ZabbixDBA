@@ -14,6 +14,8 @@ sub new {
 
 sub rule {
     my ( $self, $db, $rule, $result, $keys ) = @_;
+
+    # JSON is required by Zabbix when discovering items
     my $json = { data => [] };
     for my $row ( @{$result} ) {
         push @{ $json->{data} },

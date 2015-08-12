@@ -158,8 +158,10 @@ while ($running) {
                     $db, $rule, $dbh->errstr() );
                 next;
             }
-
-            push @data, $discovery->rule( $db, $rule, $result, $v->{keys} );
+            if ( defined $result ) {
+                push @data,
+                    $discovery->rule( $db, $rule, $result, $v->{keys} );
+            }
         }
 
         while ( my ( $item, $v ) = each %{ $ql->{discovery}->{item} } ) {
@@ -170,7 +172,10 @@ while ($running) {
                     $db, $item, $dbh->errstr() );
                 next;
             }
-            push @data, $discovery->item( $db, $item, $result, $v->{keys} );
+            if ( defined $result ) {
+                push @data,
+                    $discovery->item( $db, $item, $result, $v->{keys} );
+            }
         }
 
         for my $query ( @{ $ql->{query_list} } ) {
@@ -186,7 +191,7 @@ while ($running) {
                 next;
             }
 
-            if ( !$result || !@{$result} ) {
+            if ( !defined $result || !@{$result} ) {
                 $result = $ql->{$query}->{no_data_found} // next;
             }
             else {

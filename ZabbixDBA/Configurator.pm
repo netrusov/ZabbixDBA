@@ -6,19 +6,25 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp qw(confess);
 
+use Safe         ();
+use Data::Dumper ();
+
+my $config_file;
+
 sub new {
     my ( $class, $file ) = @_;
 
-    my $self = {};
-
     if ( !-f $file ) {
-        confess "Didn't find '$file'";
+        confess "Not a valid file: $file";
     }
-    else {
-        if ( !eval { $self = do($file) } ) {
-            confess "Failure compiling '$file': " . $EVAL_ERROR;
-        }
-    }
+
+    open my $fh, '<', $file or confess "Failed to open '$file': " . $OS_ERROR;
+    my $contents = do { local $/; <$fh> };
+    close $fh or confess 'Failed to close filehandle: ' . $OS_ERROR;
+
+    my $self = Safe->new()->reval($contents) or confess "Failure compiling '$file': " . $EVAL_ERROR;;
+
+    $config_file = $file;
 
     return bless $self, $class;
 }
@@ -33,7 +39,7 @@ sub merge {
     for ( keys %{$source} ) {
         if ( $self->{$_} ) {
             if ( ref $source->{$_} eq 'HASH' ) {
-                merge( $source->{$_}, $self->{$_} );
+                merge( $self->{$_}, $source->{$_} );
             }
             if ( ref $source->{$_} eq 'ARRAY' ) {
                 push @{ $self->{$_} }, @{ $source->{$_} };
@@ -43,6 +49,25 @@ sub merge {
             $self->{$_} = $source->{$_};
         }
     }
+    
+    return 1;
+}
+
+sub save {
+    my ( $self, $to ) = @_;
+
+    my $file = $to // $config_file;
+
+    open my $fh, '>', $file or confess "Failed to open '$file': " . $OS_ERROR;
+    print {$fh} Data::Dumper->Dump( [$self] )
+        or confess "Failed to write to '$file': " . $OS_ERROR;
+    close $fh or confess 'Failed to close filehandle: ' . $OS_ERROR;
+
+    return 1;
+}
+
+sub dump {
+    print Data::Dumper->Dump( [shift] );
     return 1;
 }
 

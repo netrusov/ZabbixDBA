@@ -4,10 +4,10 @@ use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
-use Carp qw(confess carp);
 
+use Carp ();
 use IO::Socket::INET;
-use MIME::Base64 qw(encode_base64);
+use MIME::Base64 ();
 
 my $html_template = <<'EOF';
 <req>
@@ -32,7 +32,7 @@ sub _encode {
 # MIME::Base64::encode_base64() adds newline at the end of string,
 # but Zabbix doesn't like them, and chomp() doesn't work properly with sprintf.
 # That's why this subroutine was created
-    chomp( my $result = encode_base64(shift) );
+    chomp( my $result = MIME::Base64::encode_base64(shift) );
     return $result;
 }
 
@@ -51,7 +51,7 @@ sub send {
             );
 
             if ( !$socket ) {
-                confess sprintf
+                Carp::confess sprintf
                     'Unable to connect to server %s:%d',
                     $sever->{address},
                     $sever->{port};

@@ -4,9 +4,8 @@ use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
-use Carp qw(confess carp);
 
-use JSON qw(encode_json);
+use JSON ();
 
 sub new {
     return bless {}, shift;
@@ -21,7 +20,7 @@ sub rule {
         push @{ $json->{data} },
             { map { sprintf( '{#%s}', $_ ) => $row->{$_} } @{$keys} };
     }
-    return [ $db, $rule, encode_json($json) ];
+    return [ $db, $rule, JSON::encode_json($json) ];
 }
 
 sub item {

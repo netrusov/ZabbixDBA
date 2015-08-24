@@ -20,24 +20,6 @@ cpanm --installdeps .
 
 #### Configuration
 Create user ZABBIX (or whatever you want) in database and grant privileges regarding your privacy policy.  
-Here's mine script:
-```
-CREATE USER ZABBIX
-  IDENTIFIED BY <password>
-  DEFAULT TABLESPACE USERS
-  TEMPORARY TABLESPACE TEMP
-  PROFILE DEFAULT
-  ACCOUNT UNLOCK;
-  -- 2 Roles for ZABBIX 
-  GRANT CONNECT TO ZABBIX;
-  GRANT RESOURCE TO ZABBIX;
-  ALTER USER ZABBIX DEFAULT ROLE ALL;
-  -- 4 System Privileges for ZABBIX 
-  GRANT CREATE SESSION TO ZABBIX;
-  GRANT SELECT ANY DICTIONARY TO ZABBIX;
-  GRANT SELECT ANY TABLE TO ZABBIX;
-```  
-  
 Add your database information just like described in **conf/config.pl** (this file uses Perl hash structure to describe configuration).
 
 #### Usage

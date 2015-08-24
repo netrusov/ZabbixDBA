@@ -4,16 +4,15 @@ use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
-use Carp qw(confess carp);
-use FindBin qw($Bin);
-use lib $Bin;
 
+use Carp    ();
+use FindBin ();
+use lib $FindBin::Bin;
 use DBI;
 use Parallel::ForkManager;
-
 use Log::Any qw($log);
 use Log::Any::Adapter ( 'File', $PROGRAM_NAME . '.log' );
-use Time::HiRes qw(gettimeofday tv_interval);
+use Time::HiRes ();
 use Try::Tiny;
 
 use ZabbixDBA::Configurator;
@@ -23,13 +22,13 @@ use ZabbixDBA::Sender;
 our $VERSION = '1.100';
 
 if ( scalar @ARGV < 2 ) {
-    confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
+    Carp::confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
 }
 
 my ( $command, $confile ) = @ARGV;
 
 if ( $command !~ m/start/msi ) {
-    confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
+    Carp::confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
 }
 my $running = 1;
 
@@ -63,7 +62,7 @@ while ($running) {
     }
     catch {
         $log->errorf( q{[ERROR][configurator] %s}, $_ );
-        confess $_;
+        Carp::confess $_;
     };
 
     $pm->set_max_procs( $conf->{daemon}->{maxproc} // 20 );
@@ -74,7 +73,7 @@ while ($running) {
     }
     catch {
         $log->errorf( q{[ERROR][configurator] %s}, $_ );
-        confess $_;
+        Carp::confess $_;
     };
 
     for my $db ( @{ $conf->{database_list} } ) {
@@ -147,7 +146,7 @@ while ($running) {
                 $db );
             $pm->finish( 0, { db => $db } );
         }
-        my $start = [gettimeofday];
+        my $start = [Time::HiRes::gettimeofday];
         my @data;
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
             my $result
@@ -215,7 +214,10 @@ while ($running) {
         undef @data;
         $log->infof(
             q{[INFO][fork:%d] completed fetching data on '%s', elapsed: %s},
-            $PROCESS_ID, $db, tv_interval( $start, [gettimeofday] ) );
+            $PROCESS_ID,
+            $db,
+            Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] )
+        );
 
         $pm->finish(1);
 

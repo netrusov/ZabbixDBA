@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
-use Carp qw(confess);
+use Carp ();
 
 use Safe         ();
 use Data::Dumper ();
@@ -15,14 +15,16 @@ sub new {
     my ( $class, $file ) = @_;
 
     if ( !-f $file ) {
-        confess "Not a valid file: $file";
+        Carp::confess "Not a valid file: $file";
     }
 
-    open my $fh, '<', $file or confess "Failed to open '$file': " . $OS_ERROR;
+    open my $fh, '<', $file
+        or Carp::confess "Failed to open '$file': " . $OS_ERROR;
     my $contents = do { local $/; <$fh> };
-    close $fh or confess 'Failed to close filehandle: ' . $OS_ERROR;
+    close $fh or Carp::confess 'Failed to close filehandle: ' . $OS_ERROR;
 
-    my $self = Safe->new()->reval($contents) or confess "Failure compiling '$file': " . $EVAL_ERROR;;
+    my $self = Safe->new()->reval($contents)
+        or Carp::confess "Failure compiling '$file': " . $EVAL_ERROR;
 
     $config_file = $file;
 
@@ -49,7 +51,7 @@ sub merge {
             $self->{$_} = $source->{$_};
         }
     }
-    
+
     return 1;
 }
 
@@ -58,10 +60,11 @@ sub save {
 
     my $file = $to // $config_file;
 
-    open my $fh, '>', $file or confess "Failed to open '$file': " . $OS_ERROR;
+    open my $fh, '>', $file
+        or Carp::confess "Failed to open '$file': " . $OS_ERROR;
     print {$fh} Data::Dumper->Dump( [$self] )
-        or confess "Failed to write to '$file': " . $OS_ERROR;
-    close $fh or confess 'Failed to close filehandle: ' . $OS_ERROR;
+        or Carp::confess "Failed to write to '$file': " . $OS_ERROR;
+    close $fh or Carp::confess 'Failed to close filehandle: ' . $OS_ERROR;
 
     return 1;
 }

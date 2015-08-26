@@ -4,8 +4,8 @@ use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
-use Carp ();
 
+use Carp         ();
 use Safe         ();
 use Data::Dumper ();
 
@@ -14,9 +14,8 @@ my $config_file;
 sub new {
     my ( $class, $file ) = @_;
 
-    if ( !-f $file ) {
-        Carp::confess "Not a valid file: $file";
-    }
+    Carp::confess 'No file specified' if ( !defined $file );
+    Carp::confess "Not a valid file: $file" if ( !-f $file );
 
     open my $fh, '<', $file
         or Carp::confess "Failed to open '$file': " . $OS_ERROR;

@@ -72,7 +72,7 @@ while ($running) {
                 @{ $conf->{zabbix_server_list} } );
     }
     catch {
-        $log->errorf( q{[ERROR][configurator] %s}, $_ );
+        $log->errorf( q{[ERROR][sender] %s}, $_ );
         Carp::confess $_;
     };
 
@@ -197,7 +197,13 @@ while ($running) {
                 $result = join q{ }, @{$result};
             }
 
-            push @data, [ $ql->{$query}->{send_to} // $db, $query, $result ];
+            if ( $ql->{$query}->{send_to} ) {
+                push @data, [ $_, $query, $result ]
+                    for @{ $ql->{$query}->{send_to} };
+            }
+            else {
+                push @data, [ $db, $query, $result ];
+            }
         }
 
         # Issuing rollback due to some internal DBI methods

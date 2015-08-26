@@ -6,14 +6,12 @@
 . /etc/init.d/functions
 . /opt/ZabbixDBA/settings.sh
 
-perl_bin='/usr/local/bin/perl'
-
 start() {
     if [[ -e "$LOCKFILE" ]]; then
 		echo 'Service is already running with pid' $(cat "$PIDFILE")
     else
         echo -n 'Starting ZabbixDBA service: '
-        $perl_bin /opt/ZabbixDBA/bootstrap.pl start "$CONFIG" &
+        $PERL_BIN /opt/ZabbixDBA/bootstrap.pl start "$CONFIG" &
         echo $! > "$PIDFILE"
         touch "$LOCKFILE"
         success $"ZabbixDBA started"

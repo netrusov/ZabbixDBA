@@ -4,7 +4,7 @@ package main;
 
 use 5.010;
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 use English qw(-no_match_vars);
 use sigtrap 'handler', \&stop, 'normal-signals';
 

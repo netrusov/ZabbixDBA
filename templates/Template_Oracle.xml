@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-07-24T10:14:57Z</date>
+    <date>2015-08-26T12:04:18Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -26,56 +26,13 @@
                 <item>
                     <name>Alive</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>alive</key>
                     <delay>300</delay>
                     <history>90</history>
                     <trends>0</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <delta>0</delta>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>Oracle</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                </item>
-                <item>
-                    <name>Archivelog gap</name>
-                    <type>2</type>
-                    <snmp_community/>
-                    <multiplier>0</multiplier>
-                    <snmp_oid/>
-                    <key>archive_gap</key>
-                    <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -284,9 +241,9 @@
                 <item>
                     <name>DB Block Gets</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>dbblockgets</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -327,9 +284,9 @@
                 <item>
                     <name>DB Consistent Gets</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>dbconsistentgets</key>
                     <delay>300</delay>
                     <history>300</history>
@@ -370,9 +327,9 @@
                 <item>
                     <name>DB Files Size</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>dbfilesize</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -413,9 +370,9 @@
                 <item>
                     <name>DB Hit Ratio</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>dbhitratio</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -542,9 +499,9 @@
                 <item>
                     <name>Hit ratio - BODY</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>hitratio_body</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -585,9 +542,9 @@
                 <item>
                     <name>Hit ratio - SQLAREA</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>hitratio_sqlarea</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -628,9 +585,9 @@
                 <item>
                     <name>Hit ratio - TABLE/PROCEDURE</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>hitratio_table_proc</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -671,9 +628,9 @@
                 <item>
                     <name>Hit ratio - TRIGGER</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>hitratio_trigger</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -714,9 +671,9 @@
                 <item>
                     <name>Max Processes</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>maxprocs</key>
                     <delay>86400</delay>
                     <history>90</history>
@@ -757,9 +714,9 @@
                 <item>
                     <name>Max Sessions</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>maxsession</key>
                     <delay>86400</delay>
                     <history>90</history>
@@ -800,9 +757,9 @@
                 <item>
                     <name>Miss Latch</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>miss_latch</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -843,9 +800,9 @@
                 <item>
                     <name>PGA</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pga</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -886,9 +843,9 @@
                 <item>
                     <name>PGA Aggregate target</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pga_aggregate_target</key>
                     <delay>86400</delay>
                     <history>90</history>
@@ -929,9 +886,9 @@
                 <item>
                     <name>PHI/O Datafile Reads</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>phio_datafile_reads</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -972,9 +929,9 @@
                 <item>
                     <name>PHI/O Datafile Writes</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>phio_datafile_writes</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1015,9 +972,9 @@
                 <item>
                     <name>PHI/O Redo Writes</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>phio_redo_writes</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1058,9 +1015,9 @@
                 <item>
                     <name>Pin hit ratio - BODY</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pinhitratio_body</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1101,9 +1058,9 @@
                 <item>
                     <name>Pin hit ratio - SQLAREA</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pinhitratio_sqlarea</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1187,9 +1144,9 @@
                 <item>
                     <name>Pin hit ratio - TRIGGER</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pinhitratio_trigger</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1230,9 +1187,9 @@
                 <item>
                     <name>Pool dict cache</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pool_dict_cache</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1273,9 +1230,9 @@
                 <item>
                     <name>Pool free mem</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pool_free_mem</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1316,9 +1273,9 @@
                 <item>
                     <name>Pool lib cache</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pool_lib_cache</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1359,9 +1316,9 @@
                 <item>
                     <name>Pool misc</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pool_misc</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1402,9 +1359,9 @@
                 <item>
                     <name>Pool sql area</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>pool_sql_area</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1445,9 +1402,9 @@
                 <item>
                     <name>Processes</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>procnum</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1488,9 +1445,9 @@
                 <item>
                     <name>Session Active</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>session_active</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1531,9 +1488,9 @@
                 <item>
                     <name>Session Inactive</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>session_inactive</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1574,9 +1531,9 @@
                 <item>
                     <name>Sessions</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>session</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1617,9 +1574,9 @@
                 <item>
                     <name>Session System</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>session_system</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1660,9 +1617,9 @@
                 <item>
                     <name>SGA buffer cache</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>sga_buffer_cache</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1703,9 +1660,9 @@
                 <item>
                     <name>SGA fixed</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>sga_fixed</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1746,9 +1703,9 @@
                 <item>
                     <name>SGA java pool</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>sga_java_pool</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1789,9 +1746,9 @@
                 <item>
                     <name>SGA large pool</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>sga_large_pool</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1832,9 +1789,9 @@
                 <item>
                     <name>SGA log buffer</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>sga_log_buffer</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -1875,9 +1832,9 @@
                 <item>
                     <name>SGA shared pool</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>sga_shared_pool</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -2004,9 +1961,9 @@
                 <item>
                     <name>Waits direct path read</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>waits_directpath_read</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -2047,9 +2004,9 @@
                 <item>
                     <name>Waits File I/O</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>waits_file_io</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -2090,9 +2047,9 @@
                 <item>
                     <name>Waits Logwrite</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>waits_logwrite</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -2133,9 +2090,9 @@
                 <item>
                     <name>Waits multiblock read</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>waits_multiblock_read</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -2176,9 +2133,9 @@
                 <item>
                     <name>Waits single block read</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>waits_singleblock_read</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -2219,9 +2176,9 @@
                 <item>
                     <name>Waits SQLNet</name>
                     <type>2</type>
-                    <snmp_community>public</snmp_community>
+                    <snmp_community/>
                     <multiplier>0</multiplier>
-                    <snmp_oid>interfaces.ifTable.ifEntry.ifInOctets.1</snmp_oid>
+                    <snmp_oid/>
                     <key>waits_sqlnet</key>
                     <delay>300</delay>
                     <history>90</history>
@@ -2509,16 +2466,6 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template Oracle:archive_gap.last(0)}&gt;10</expression>
-            <name>Archivelog gap</name>
-            <url/>
-            <status>0</status>
-            <priority>3</priority>
-            <description>Must be used on standby database</description>
-            <type>0</type>
-            <dependencies/>
-        </trigger>
-        <trigger>
             <expression>{Template Oracle:archive.last(0)}&gt;1024</expression>
             <name>Archivelog generation is too fast</name>
             <url/>
@@ -2569,11 +2516,21 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:alive.last(0)}=0 or {Template Oracle:alive.nodata(5m)}=1</expression>
+            <expression>{Template Oracle:alive.last(0)}=0</expression>
             <name>Instance is down or not accessible</name>
             <url/>
             <status>0</status>
             <priority>5</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template Oracle:alive.nodata(300)}=1</expression>
+            <name>No data received for 5 minutes</name>
+            <url/>
+            <status>0</status>
+            <priority>3</priority>
             <description/>
             <type>0</type>
             <dependencies/>

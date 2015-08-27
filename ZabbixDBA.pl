@@ -1,13 +1,15 @@
 #!/usr/bin/env perl
 
+package main;
+
 use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
+use sigtrap 'handler', \&stop, 'normal-signals';
 
-use Carp    ();
-use FindBin ();
-use lib $FindBin::Bin;
+use Carp ();
+use lib 'lib';
 use DBI;
 use Parallel::ForkManager;
 use Log::Any qw($log);
@@ -15,32 +17,36 @@ use Log::Any::Adapter ( 'File', $PROGRAM_NAME . '.log' );
 use Time::HiRes ();
 use Try::Tiny;
 
-use ZabbixDBA::Configurator;
-use ZabbixDBA::Discoverer;
-use ZabbixDBA::Sender;
+use Configurator;
+use Zabbix::Discoverer;
+use Zabbix::Sender;
 
-our $VERSION = '1.100';
+our $VERSION = '1.101';
 
-if ( scalar @ARGV < 2 ) {
-    Carp::confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
+local $SIG{__WARN__} = sub { $log->info(qq{[WARN][main:${PROCESS_ID}] @_}) };
+
+if ( !@ARGV ) {
+    Carp::confess 'Usage: perl ZabbixDBA.pl /path/to/config.pl &';
 }
 
-my ( $command, $confile ) = @ARGV;
+my ($confile) = @ARGV;
 
-if ( $command !~ m/start/msi ) {
-    Carp::confess 'Usage: perl bootstrap.pl start /path/to/config.pl &';
-}
 my $running = 1;
-
-local $SIG{INT}  = \&stop;
-local $SIG{HUP}  = \&stop;
-local $SIG{ALRM} = \&stop;
-local $SIG{USR1} = \&stop;
-
 my ( $conf, $sender, $dbpool );
-my $discovery = ZabbixDBA::Discoverer->new();
 
-my $pm = Parallel::ForkManager->new(20);
+sub stop {
+    $running = 0;
+    $log->infof( q{[INFO][main:%d] stopping ZabbixDBA monitoring plugin},
+        $PROCESS_ID );
+    for ( keys %{$dbpool} ) {
+        $log->infof( q{[INFO][dbi] disconnecting from '%s'}, $_ );
+        $dbpool->{$_}->disconnect;
+    }
+    return 1;
+}
+
+my $discovery = Zabbix::Discoverer->new();
+my $pm        = Parallel::ForkManager->new(20);
 
 $pm->run_on_finish(
     sub {
@@ -58,7 +64,7 @@ while ($running) {
     # Reloading configuration file to see if
     # values were changed (no need to restart daemon)
     try {
-        $conf = ZabbixDBA::Configurator->new($confile);
+        $conf = Configurator->new($confile);
     }
     catch {
         $log->errorf( q{[ERROR][configurator] %s}, $_ );
@@ -68,7 +74,7 @@ while ($running) {
     $pm->set_max_procs( $conf->{daemon}->{maxproc} // 20 );
 
     try {
-        $sender = ZabbixDBA::Sender->new( map { $_ => $conf->{$_} }
+        $sender = Zabbix::Sender->new( map { $conf->{$_} }
                 @{ $conf->{zabbix_server_list} } );
     }
     catch {
@@ -109,8 +115,7 @@ while ($running) {
 
         try {
             $ql
-                = ZabbixDBA::Configurator->new(
-                $conf->{$db}->{query_list_file}
+                = Configurator->new( $conf->{$db}->{query_list_file}
                     // $conf->{default}->{query_list_file} );
         }
         catch {
@@ -126,7 +131,7 @@ while ($running) {
             my $eql;
 
             try {
-                $eql = ZabbixDBA::Configurator->new(
+                $eql = Configurator->new(
                     $conf->{$db}->{extra_query_list_file} );
             }
             catch {
@@ -136,16 +141,17 @@ while ($running) {
             $ql->merge($eql);
         }
 
-        $pm->start() and next;
-
         # Starting fork() of main code
         # -----------------------------------------------------------
+        $pm->start() and next;
+
         my $dbh = $dbpool->{$db}->clone();
         if ( !$dbh ) {
             $log->errorf( q{[ERROR][dbi] method 'clone' failed for '%s'},
                 $db );
             $pm->finish( 0, { db => $db } );
         }
+
         my $start = [Time::HiRes::gettimeofday];
         my @data;
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
@@ -224,7 +230,6 @@ while ($running) {
             $db,
             Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] )
         );
-
         $pm->finish(1);
 
         # -----------------------------------------------------------
@@ -232,7 +237,7 @@ while ($running) {
 
     $pm->wait_all_children();
 
-    sleep $conf->{daemon}->{sleep};
+    sleep( $conf->{daemon}->{sleep} // 120 );
 }
 
 sub get_connection {
@@ -275,13 +280,4 @@ sub get_connection {
     return $dbh;
 }
 
-sub stop {
-    $running = 0;
-    $log->infof( q{[INFO][main:%d] stopping ZabbixDBA monitoring plugin},
-        $PROCESS_ID );
-    for ( keys %{$dbpool} ) {
-        $log->infof( q{[INFO][dbi] disconnecting from '%s'}, $_ );
-        $dbpool->{$_}->disconnect;
-    }
-    return 1;
-}
+1;

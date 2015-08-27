@@ -1,4 +1,4 @@
-package ZabbixDBA::Discoverer;
+package Zabbix::Discoverer;
 
 use 5.010;
 use strict;

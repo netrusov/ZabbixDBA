@@ -11,7 +11,12 @@ start() {
 		echo 'Service is already running with pid' $(cat "$PIDFILE")
     else
         echo -n 'Starting ZabbixDBA service: '
-        $PERL_BIN /opt/ZabbixDBA/bootstrap.pl start "$CONFIG" &
+        $PERL_BIN /opt/ZabbixDBA/ZabbixDBA.pl "$CONFIG" &
+        sleep 1
+        if ! ps -p $! > /dev/null; then
+            failure $"ZabbixDBA failed to start"
+            exit 1
+        fi
         echo $! > "$PIDFILE"
         touch "$LOCKFILE"
         success $"ZabbixDBA started"

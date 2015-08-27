@@ -1,12 +1,10 @@
-package ZabbixDBA::Configurator;
+package Configurator;
 
 use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
-
 use Carp         ();
-use Safe         ();
 use Data::Dumper ();
 
 my $config_file;
@@ -17,13 +15,11 @@ sub new {
     Carp::confess 'No file specified' if ( !defined $file );
     Carp::confess "Not a valid file: $file" if ( !-f $file );
 
-    open my $fh, '<', $file
-        or Carp::confess "Failed to open '$file': " . $OS_ERROR;
-    my $contents = do { local $/; <$fh> };
-    close $fh or Carp::confess 'Failed to close filehandle: ' . $OS_ERROR;
+    my $self = {};
 
-    my $self = Safe->new()->reval($contents)
-        or Carp::confess "Failure compiling '$file': " . $EVAL_ERROR;
+    if ( !eval { $self = do($file) } ) {
+        Carp::confess "Failure compiling '$file': " . $EVAL_ERROR;
+    }
 
     $config_file = $file;
 

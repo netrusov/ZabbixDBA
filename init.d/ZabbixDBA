@@ -8,7 +8,7 @@
 
 start() {
     if [[ -e "$LOCKFILE" ]]; then
-		echo 'Service is already running with pid' $(cat "$PIDFILE")
+        echo 'Service is already running with pid' $(cat "$PIDFILE")
     else
         echo -n 'Starting ZabbixDBA service: '
         $PERL_BIN /opt/ZabbixDBA/ZabbixDBA.pl "$CONFIG" &
@@ -28,9 +28,12 @@ stop() {
     if [[ -e "$LOCKFILE" ]]; then
         echo -n 'Stopping ZabbixDBA service: '
         xargs kill -s USR1 < "$PIDFILE"
+        if [[ $? != 0 ]]; then
+            failure $"ZabbixDBA failed to stop"
+        else
+            success $"ZabbixDBA stopped"
+        fi
         rm -f "$LOCKFILE" "$PIDFILE"
-        success $"ZabbixDBA stopped"
-        echo
     else
         echo 'Service is not running'
     fi  
@@ -40,7 +43,7 @@ status() {
     if [[ -e "$LOCKFILE" ]]; then
         echo 'Service is running with pid' $(cat "$PIDFILE")
     else
-        echo 'Service is stopped'
+        echo 'Service is not running'
     fi
 }
 

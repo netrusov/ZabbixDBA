@@ -199,7 +199,7 @@ while ($running) {
 
             $result = join q{ }, map { $_ // () } @{$result};
 
-            if ( !defined $result ) {
+            if ( !defined $result || !length $result ) {
                 $result = $ql->{$query}->{no_data_found} // next;
             }
 

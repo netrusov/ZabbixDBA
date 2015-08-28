@@ -1,0 +1,1 @@
+### Oracle Standby database configuration

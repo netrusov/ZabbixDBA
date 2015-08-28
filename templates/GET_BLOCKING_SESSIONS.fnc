@@ -115,7 +115,7 @@ BEGIN
    FETCH ALL_LOCKS INTO ALL_LOCKS_REC;
 
    IF ALL_LOCKS%NOTFOUND THEN
-      RESULT := 'No blocking sessions detected';
+      RESULT := NULL;
    ELSE
       LOOP
          SPACE := MAKE_SPACES (ALL_LOCKS_REC.LVL - 1);

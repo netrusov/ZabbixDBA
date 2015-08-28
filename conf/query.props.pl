@@ -1,28 +1,30 @@
 {
     query_list => [
-        'archive',
-        'uptime',                 'dbblockgets',
-        'dbconsistentgets',       'dbphysicalreads',
-        'dbblockchanges',         'dbhitratio',
-        'hitratio_body',          'hitratio_table_proc',
-        'hitratio_sqlarea',       'hitratio_trigger',
-        'miss_latch',             'pga_aggregate_target',
-        'pga',                    'phio_datafile_reads',
-        'phio_datafile_writes',   'phio_redo_writes',
-        'pinhitratio_body',       'pinhitratio_sqlarea',
-        'pinhitratio_trigger',    'pinhitratio_table_proc',
-        'pool_dict_cache',        'pool_free_mem',
-        'pool_lib_cache',         'pool_sql_area',
-        'pool_misc',              'sga_buffer_cache',
+        'archive',                'uptime',
+        'dbblockgets',            'dbconsistentgets',
+        'dbphysicalreads',        'dbblockchanges',
+        'dbhitratio',             'hitratio_body',
+        'hitratio_table_proc',    'hitratio_sqlarea',
+        'hitratio_trigger',       'miss_latch',
+        'pga_aggregate_target',   'pga',
+        'phio_datafile_reads',    'phio_datafile_writes',
+        'phio_redo_writes',       'pinhitratio_body',
+        'pinhitratio_sqlarea',    'pinhitratio_trigger',
+        'pinhitratio_table_proc', 'pool_dict_cache',
+        'pool_free_mem',          'pool_lib_cache',
+        'pool_sql_area',          'pool_misc',
+        'sga_buffer_cache',       'maxprocs',
+        'procnum',                'maxsession',
         'session',                'session_system',
         'session_active',         'session_inactive',
-        'sga_fixed',              'sga_java_pool',
-        'sga_large_pool',         'sga_log_buffer',
-        'waits_directpath_read',  'waits_file_io',
-        'waits_controlfileio',    'waits_logwrite',
-        'waits_multiblock_read',  'waits_singleblock_read',
-        'waits_sqlnet',           'blocking_sessions',
-        'blocking_sessions_full', 'dbversion'
+        'sga_shared_pool',        'sga_fixed',
+        'sga_java_pool',          'sga_large_pool',
+        'sga_log_buffer',         'waits_directpath_read',
+        'waits_file_io',          'waits_controlfileio',
+        'waits_logwrite',         'waits_multiblock_read',
+        'waits_singleblock_read', 'waits_sqlnet',
+        'blocking_sessions',      'blocking_sessions_full',
+        'dbversion'
     ],
     archive => {
         query => q{
@@ -214,6 +216,21 @@
             , 'sql area')
         },
     },
+    maxprocs => {
+        query => q{
+            select value from gv$parameter where name = 'processes'
+        },
+    },
+    procnum => {
+        query => q{
+            select count (*) from gv$process
+        },
+    },
+    maxsession => {
+        query => q{
+            select value from gv$parameter where name = 'sessions'
+        },
+    },
     session => {
         query => q{
             select count (*) from gv$session
@@ -266,6 +283,13 @@
             select sum (bytes) / 1024 / 1024
             from gv$sgastat
             where pool = 'large pool'
+        },
+    },
+    sga_shared_pool => {
+        query => q{
+            select sum (bytes) / 1024 / 1024
+            from gv$sgastat
+            where pool = 'shared pool'
         },
     },
     sga_log_buffer => {

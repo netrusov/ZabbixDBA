@@ -1,6 +1,4 @@
 ## ZabbixDBA
-Perl plugin for Zabbix to monitor RDBMS.
-  
 ZabbixDBA uses threading of DBI connections which is good for monitoring of multiple database instances.
 Currently there are template and query set only for Oracle database, but Perl DBI supports any type of RDBMS:
 - Oracle
@@ -14,6 +12,10 @@ You can find full list of DBD modules here: https://metacpan.org/search?q=DBD
 Feel free to fork and contribute!
   
 #### Installation
+Copy project source to desired directory. 
+If path will differ from default (/opt/ZabbixDBA) be sure to change it in startup script!
+Open **settings.sh** file and carefully check all paths.
+  
 Put the script **init.d/ZabbixDBA** to your **/etc/init.d** directory
 ```
 cp init.d/ZabbixDBA /etc/init.d

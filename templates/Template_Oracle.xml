@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-08-26T12:04:18Z</date>
+    <date>2015-08-28T14:12:50Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -2466,7 +2466,7 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template Oracle:archive.last(0)}&gt;1024</expression>
+            <expression>{Template Oracle:archive.last()}&gt;1024</expression>
             <name>Archivelog generation is too fast</name>
             <url/>
             <status>0</status>
@@ -2476,7 +2476,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:blocking_sessions.avg(#2)}=1</expression>
+            <expression>{Template Oracle:blocking_sessions.last(#2)}&gt;0</expression>
             <name>Blocking sessions</name>
             <url/>
             <status>0</status>
@@ -2486,7 +2486,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:uptime.last(0)}&lt;300</expression>
+            <expression>{Template Oracle:uptime.last()}&lt;300</expression>
             <name>DB has just been restarted</name>
             <url/>
             <status>0</status>
@@ -2516,7 +2516,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:alive.last(0)}=0</expression>
+            <expression>{Template Oracle:alive.last()}=0</expression>
             <name>Instance is down or not accessible</name>
             <url/>
             <status>0</status>
@@ -2536,7 +2536,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>({Template Oracle:pga.last(0)}*100/{Template Oracle:pga_aggregate_target.last(0)})&gt;95</expression>
+            <expression>({Template Oracle:pga.last()}*100/{Template Oracle:pga_aggregate_target.last()})&gt;98</expression>
             <name>PGA almost fully commited</name>
             <url/>
             <status>0</status>

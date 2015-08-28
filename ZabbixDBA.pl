@@ -8,8 +8,9 @@ use warnings FATAL => 'all';
 use English qw(-no_match_vars);
 use sigtrap 'handler', \&stop, 'normal-signals';
 
-use Carp ();
-use lib 'lib';
+use Carp    ();
+use FindBin ();
+use lib "$FindBin::Bin/lib";
 use DBI;
 use Parallel::ForkManager;
 use Log::Any qw($log);
@@ -196,11 +197,10 @@ while ($running) {
                 next;
             }
 
-            if ( !defined $result || !@{$result} ) {
+            $result = join q{ }, map { $_ // () } @{$result};
+
+            if ( !defined $result ) {
                 $result = $ql->{$query}->{no_data_found} // next;
-            }
-            else {
-                $result = join q{ }, @{$result};
             }
 
             if ( $ql->{$query}->{send_to} ) {

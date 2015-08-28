@@ -13,14 +13,16 @@ sub new {
 
 sub rule {
     my ( $self, $db, $rule, $result, $keys ) = @_;
-
-    # JSON is required by Zabbix when discovering items
-    my $json = { data => [] };
+    
+    my $data = { data => [] };
     for my $row ( @{$result} ) {
-        push @{ $json->{data} },
+        push @{ $data->{data} },
             { map { sprintf( '{#%s}', $_ ) => $row->{$_} } @{$keys} };
     }
-    return [ $db, $rule, JSON::encode_json($json) ];
+
+    # JSON is required by Zabbix when discovering items
+    my $json = JSON::->new()->utf8()->encode($data);
+    return [ $db, $rule, $json ];
 }
 
 sub item {

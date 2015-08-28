@@ -27,13 +27,14 @@ start() {
 stop() {
     if [[ -e "$LOCKFILE" ]]; then
         echo -n 'Stopping ZabbixDBA service: '
-        xargs kill -s USR1 < "$PIDFILE"
+        xargs kill -s INT < "$PIDFILE"
         if [[ $? != 0 ]]; then
             failure $"ZabbixDBA failed to stop"
         else
             success $"ZabbixDBA stopped"
         fi
         rm -f "$LOCKFILE" "$PIDFILE"
+        echo
     else
         echo 'Service is not running'
     fi  

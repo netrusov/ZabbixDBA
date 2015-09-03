@@ -13,18 +13,23 @@ use FindBin ();
 use lib "$FindBin::Bin/lib";
 use DBI;
 use Parallel::ForkManager;
-use Log::Any qw($log);
-use Log::Any::Adapter ( 'File', $PROGRAM_NAME . '.log' );
 use Time::HiRes ();
 use Try::Tiny;
+
+use Log::Log4perl qw/:easy/;
+use Log::Any qw($log);
+use Log::Any::Adapter;
+
+Log::Log4perl::init("$FindBin::Bin/conf/log4perl.conf");
+Log::Any::Adapter->set('Log4perl');
+
+local $SIG{__WARN__} = sub { $log->info(qq{[main:${PROCESS_ID}] @_}) };
 
 use Configurator;
 use Zabbix::Discoverer;
 use Zabbix::Sender;
 
-our $VERSION = '1.101';
-
-local $SIG{__WARN__} = sub { $log->info(qq{[WARN][main:${PROCESS_ID}] @_}) };
+our $VERSION = '1.110';
 
 if ( !@ARGV ) {
     Carp::confess 'Usage: perl ZabbixDBA.pl /path/to/config.pl &';
@@ -37,10 +42,10 @@ my ( $conf, $sender, $dbpool );
 
 sub stop {
     $running = 0;
-    $log->infof( q{[INFO][main:%d] stopping ZabbixDBA monitoring plugin},
+    $log->infof( q{[main:%d] stopping ZabbixDBA monitoring plugin},
         $PROCESS_ID );
     for ( keys %{$dbpool} ) {
-        $log->infof( q{[INFO][dbi] disconnecting from '%s'}, $_ );
+        $log->infof( q{[dbi] disconnecting from '%s'}, $_ );
         $dbpool->{$_}->disconnect;
     }
     return 1;
@@ -57,8 +62,7 @@ $pm->run_on_finish(
     }
 );
 
-$log->infof( q{[INFO][main:%d] starting ZabbixDBA monitoring plugin},
-    $PROCESS_ID );
+$log->infof( q{[main:%d] starting ZabbixDBA monitoring plugin}, $PROCESS_ID );
 
 while ($running) {
 
@@ -68,7 +72,7 @@ while ($running) {
         $conf = Configurator->new($confile);
     }
     catch {
-        $log->errorf( q{[ERROR][configurator] %s}, $_ );
+        $log->errorf( q{[configurator] %s}, $_ );
         Carp::confess $_;
     };
 
@@ -79,14 +83,14 @@ while ($running) {
                 @{ $conf->{zabbix_server_list} } );
     }
     catch {
-        $log->errorf( q{[ERROR][sender] %s}, $_ );
+        $log->errorf( q{[sender] %s}, $_ );
         Carp::confess $_;
     };
 
     for my $db ( @{ $conf->{database_list} } ) {
         if ( !$conf->{$db} || !$conf->{$db}->{dsn} ) {
             $log->warnf(
-                q{[WARN][configurator] configuration of '%s' is not described in '%s'},
+                q{[configurator] configuration of '%s' is not described in '%s'},
                 $db, $confile
             );
             next;
@@ -99,8 +103,7 @@ while ($running) {
         $dbpool->{$db}->ping();
 
         if ( $dbpool->{$db}->errstr() ) {
-            $log->errorf(
-                q{[ERROR][dbi] connection lost contact for '%s' : %s},
+            $log->errorf( q{[dbi] connection lost contact for '%s' : %s},
                 $db, $dbpool->{$db}->errstr() );
             $dbpool->{$db} = get_connection($db) or next;
         }
@@ -109,7 +112,7 @@ while ($running) {
             $sender->send( [ $db, 'alive', 1 ] );
         }
         catch {
-            $log->warnf( q{[WARN][sender] %s}, $_ );
+            $log->warnf( q{[sender] %s}, $_ );
         };
 
         my $ql;
@@ -120,7 +123,7 @@ while ($running) {
                     // $conf->{default}->{query_list_file} );
         }
         catch {
-            $log->errorf( q{[ERROR][configurator] %s}, $_ );
+            $log->errorf( q{[configurator] %s}, $_ );
             return;
 
             # Try::Tiny is acting like a subroutine,
@@ -136,7 +139,7 @@ while ($running) {
                     $conf->{$db}->{extra_query_list_file} );
             }
             catch {
-                $log->errorf( q{[ERROR][configurator] %s}, $_ );
+                $log->errorf( q{[configurator] %s}, $_ );
             };
 
             $ql->merge($eql);
@@ -148,8 +151,7 @@ while ($running) {
 
         my $dbh = $dbpool->{$db}->clone();
         if ( !$dbh ) {
-            $log->errorf( q{[ERROR][dbi] method 'clone' failed for '%s'},
-                $db );
+            $log->errorf( q{[dbi] method 'clone' failed for '%s'}, $db );
             $pm->finish( 0, { db => $db } );
         }
 
@@ -160,7 +162,7 @@ while ($running) {
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
 
             if ( $dbh->errstr() ) {
-                $log->errorf( q{[ERROR][dbi] %s => %s : %s},
+                $log->errorf( q{[dbi] %s => %s : %s},
                     $db, $rule, $dbh->errstr() );
                 next;
             }
@@ -174,7 +176,7 @@ while ($running) {
             my $result
                 = $dbh->selectall_arrayref( $v->{query}, { Slice => {} } );
             if ( $dbh->errstr() ) {
-                $log->errorf( q{[ERROR][dbi] %s => %s : %s},
+                $log->errorf( q{[dbi] %s => %s : %s},
                     $db, $item, $dbh->errstr() );
                 next;
             }
@@ -188,11 +190,11 @@ while ($running) {
             if ( !$ql->{$query} ) {
                 next;
             }
-            my $result
-                = $dbh->selectrow_arrayref( $ql->{$query}->{query} );
+            my $result = $dbh->selectrow_arrayref( $ql->{$query}->{query},
+                undef, @{ $ql->{$query}->{bind_values} } );
 
             if ( $dbh->errstr() ) {
-                $log->error( sprintf q{[ERROR][dbi] %s => %s : %s},
+                $log->error( sprintf q{[dbi] %s => %s : %s},
                     $db, $query, $dbh->errstr() );
                 next;
             }
@@ -220,12 +222,12 @@ while ($running) {
             $sender->send(@data);
         }
         catch {
-            $log->warnf( q{[WARN][sender] %s}, $_ );
+            $log->warnf( q{[sender] %s}, $_ );
         };
 
         undef @data;
         $log->infof(
-            q{[INFO][fork:%d] completed fetching data on '%s', elapsed: %s},
+            q{[fork:%d] completed fetching data on '%s', elapsed: %s},
             $PROCESS_ID,
             $db,
             Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] )
@@ -260,7 +262,7 @@ sub get_connection {
     my $alive = 1;
 
     if ( DBI->errstr() ) {
-        $log->errorf( q{[ERROR][dbi] connection failed for '%s@%s' : %s},
+        $log->errorf( q{[dbi] connection failed for '%s@%s' : %s},
             $user, $db, DBI->errstr() );
         $alive = 0;
     }
@@ -269,11 +271,11 @@ sub get_connection {
         $sender->send( [ $db, 'alive', $alive ] );
     }
     catch {
-        $log->warnf( q{[WARN][sender] %s}, $_ );
+        $log->warnf( q{[sender] %s}, $_ );
     };
 
     if ($alive) {
-        $log->infof( q{[INFO][dbi] connected to '%s@%s' (%s)},
+        $log->infof( q{[dbi] connected to '%s@%s' (%s)},
             $user, $db, $conf->{$db}->{dsn} );
     }
 

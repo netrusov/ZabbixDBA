@@ -1,6 +1,6 @@
 {
     query_list => [
-        'archive',                'uptime',
+        'archivelog_switch',      'uptime',
         'dbblockgets',            'dbconsistentgets',
         'dbphysicalreads',        'dbblockchanges',
         'dbhitratio',             'hitratio_body',
@@ -26,11 +26,11 @@
         'blocking_sessions',      'blocking_sessions_full',
         'dbversion'
     ],
-    archive => {
+    archivelog_switch => {
         query => q{
-            select nvl (avg ( (blocks * block_size) / 1024 / 1024), 0)
-            from gv$archived_log
-            where completion_time >= (sysdate - 1 / 24)
+            select nvl (count(*), 0)
+            from gv$log_history
+            where first_time >= (sysdate - 1 / 24)
         },
     },
     uptime => {

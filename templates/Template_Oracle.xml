@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2015-08-28T14:12:50Z</date>
+    <date>2015-09-03T08:47:13Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -72,14 +72,14 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>archive</key>
+                    <key>archivelog_switch</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
                     <status>0</status>
-                    <value_type>0</value_type>
+                    <value_type>3</value_type>
                     <allowed_hosts/>
-                    <units>MB</units>
+                    <units/>
                     <delta>0</delta>
                     <snmpv3_contextname/>
                     <snmpv3_securityname/>
@@ -461,7 +461,7 @@
                     <snmp_oid/>
                     <key>dbversion</key>
                     <delay>0</delay>
-                    <history>7</history>
+                    <history>1</history>
                     <trends>365</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -2466,7 +2466,7 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template Oracle:archive.last()}&gt;1024</expression>
+            <expression>{Template Oracle:archivelog_switch.last()}&gt;20</expression>
             <name>Archivelog generation is too fast</name>
             <url/>
             <status>0</status>
@@ -2476,7 +2476,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:blocking_sessions.last(#2)}&gt;0</expression>
+            <expression>{Template Oracle:blocking_sessions.avg(#2)}&gt;0</expression>
             <name>Blocking sessions</name>
             <url/>
             <status>0</status>
@@ -2574,7 +2574,7 @@
                     <type>0</type>
                     <item>
                         <host>Template Oracle</host>
-                        <key>archive</key>
+                        <key>archivelog_switch</key>
                     </item>
                 </graph_item>
             </graph_items>

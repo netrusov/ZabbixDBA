@@ -190,8 +190,8 @@ while ($running) {
             if ( !$ql->{$query} ) {
                 next;
             }
-            my $result
-                = $dbh->selectrow_arrayref( $ql->{$query}->{query} );
+            my $result = $dbh->selectrow_arrayref( $ql->{$query}->{query},
+                undef, @{ $ql->{$query}->{bind_values} } );
 
             if ( $dbh->errstr() ) {
                 $log->error( sprintf q{[dbi] %s => %s : %s},

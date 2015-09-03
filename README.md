@@ -41,6 +41,8 @@ Add your database information just like described in **conf/config.pl** (this fi
 
 - [Discovery rules](docs/DiscoveryRules.md)
 - [send_to](docs/SendTo.md)
+- [Bind Values](https://metacpan.org/pod/DBI#Placeholders-and-Bind-Values)
+- [Log4perl](https://metacpan.org/pod/Log::Log4perl)
   
 #### TODO
 - reformat code for easy reading and maintenance

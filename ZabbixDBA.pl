@@ -29,7 +29,7 @@ use Configurator;
 use Zabbix::Discoverer;
 use Zabbix::Sender;
 
-our $VERSION = '1.101';
+our $VERSION = '1.110';
 
 if ( !@ARGV ) {
     Carp::confess 'Usage: perl ZabbixDBA.pl /path/to/config.pl &';

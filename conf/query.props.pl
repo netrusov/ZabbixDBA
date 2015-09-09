@@ -372,57 +372,58 @@ group by rootid
         no_data_found => 0,
     },
     blocking_sessions_full => {
-        query => q{    select    lpad ('    ', level)
+        query => q{    
+           select    lpad (' ', level * 4)
            || 'INST_ID         :  '
            || inst_id
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'SERVICE_NAME    :  '
            || service_name
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'SID,SERIAL      :  '
            || sid
            || ','
            || serial#
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'USERNAME        :  '
            || username
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'OSUSER          :  '
            || osuser
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'MACHINE         :  '
            || machine
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'PROGRAM         :  '
            || program
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'SQL_ID          :  '
            || sql_id
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'EVENT           :  '
            || event
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'SECONDS_IN_WAIT :  '
            || seconds_in_wait
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'STATE           :  '
            || state
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || 'STATUS          :  '
            || status
            || chr (10)
-           || lpad ('    ', level)
+           || lpad (' ', level * 4)
            || '========================='
            || chr (10)
               blocking_sess_info

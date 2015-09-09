@@ -29,7 +29,7 @@ use Configurator;
 use Zabbix::Discoverer;
 use Zabbix::Sender;
 
-our $VERSION = '1.110';
+our $VERSION = '1.111';
 
 if ( !@ARGV ) {
     Carp::confess 'Usage: perl ZabbixDBA.pl /path/to/config.pl &';
@@ -190,7 +190,7 @@ while ($running) {
             if ( !$ql->{$query} ) {
                 next;
             }
-            my $result = $dbh->selectrow_arrayref( $ql->{$query}->{query},
+            my $arrayref = $dbh->selectall_arrayref( $ql->{$query}->{query},
                 undef, @{ $ql->{$query}->{bind_values} } );
 
             if ( $dbh->errstr() ) {
@@ -199,7 +199,11 @@ while ($running) {
                 next;
             }
 
-            $result = join q{ }, map { $_ // () } @{$result};
+            my $result;
+
+            for my $row ( @{$arrayref} ) {
+                $result .= join q{ }, map { $_ // () } @{$row};
+            }
 
             if ( !defined $result || !length $result ) {
                 $result = $ql->{$query}->{no_data_found} // next;

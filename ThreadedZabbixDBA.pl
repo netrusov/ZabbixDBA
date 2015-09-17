@@ -45,8 +45,8 @@ sub stop {
     $log->infof( q{[main] stopping %s monitoring plugin}, $PROJECT_NAME );
     $running = 0;
 
-    for ( values %{$threads} ) {
-        if ( $_->is_running() ) {
+    while ( threads->list(threads::all) ) {
+        for ( threads->list(threads::all) ) {
             $_->join() if $_->is_joinable();
         }
     }
@@ -104,7 +104,6 @@ while ($running) {
     }
 
     sleep( $conf->{daemon}->{sleep} // $SLEEP );
-
 }
 
 sub count {
@@ -176,7 +175,7 @@ sub start_thread {
 
             if ( defined $result ) {
                 push @data,
-                    Zabbix::Discoverer->rule( $db, $rule, $result,
+                    Zabbix::Discoverer::rule( $db, $rule, $result,
                     $v->{keys} );
             }
         }
@@ -189,7 +188,7 @@ sub start_thread {
 
             if ( defined $result ) {
                 push @data,
-                    Zabbix::Discoverer->item( $db, $item, $result,
+                    Zabbix::Discoverer::item( $db, $item, $result,
                     $v->{keys} );
             }
         }

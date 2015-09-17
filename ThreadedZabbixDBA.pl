@@ -22,6 +22,7 @@ use Log::Any qw($log);
 use Log::Any::Adapter;
 
 use Constants;
+use Connector;
 use Configurator;
 use Zabbix::Discoverer;
 use Zabbix::Sender;

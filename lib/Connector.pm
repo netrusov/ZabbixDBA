@@ -7,6 +7,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use DBI;
+use Try::Tiny;
 
 sub new {
     my $class = shift;
@@ -15,7 +16,7 @@ sub new {
 
 sub connect {
     my $self = shift;
-    my ( $db, $conf, $log, $sender ) = %$self{qw|db conf log sender|};
+    my ( $db, $conf, $log, $sender ) = @$self{qw|db conf log sender|};
 
     my $opts = {
         PrintError => 0,
@@ -60,12 +61,13 @@ sub connect {
 sub disconnect {
     my $self = shift;
     $self->{dbh}->disconnect();
+    return 1;
 }
 
 sub selectall_arrayref {
     my $self = shift;
     my ( $query_name, $query, $opts, @bind_values ) = @_;
-    my ( $db, $dbh, $log ) = %$self{qw|db dbh log|};
+    my ( $db, $dbh, $log ) = @$self{qw|db dbh log|};
 
     my $result = $dbh->selectall_arrayref( $query, $opts, @bind_values );
 
@@ -87,18 +89,16 @@ sub set {
     $self->{$_} = $args->{$_} for ( keys %{$args} );
     return 1;
 }
-
 sub ping {
 
     my $self = shift;
 
-    my ( $db, $dbh, $log, $sender ) = %$self{qw|db dbh log sender|};
+    my ( $db, $dbh, $log, $sender ) = @$self{qw|db dbh log sender|};
 
     my $alive = 1;
 
     if ( !$dbh->ping() ) {
-        $log->errorf( q{[dbi] connection lost contact for '%s'},
-            $db);
+        $log->errorf( q{[dbi] connection lost contact for '%s'}, $db );
 
         $alive = 0;
     }

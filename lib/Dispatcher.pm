@@ -14,7 +14,7 @@ sub new {
 
 sub connect {
     my $self = shift;
-    my ( $db, $conf, $log, $sender ) = @{ $self->{qw|db conf log sender|} };
+    my ( $db, $conf, $log, $sender ) = @$self{qw|db conf log sender|};
 
     my $opts = {
         PrintError => 0,
@@ -53,6 +53,16 @@ sub connect {
     $self->{dbh} = $dbh;
 
     return $alive;
+}
+
+sub ping {
+    my $self = shift;
+    my ( $db, $dbh, $log ) = @$self{qw|db dbh log|};
+
+    if ( $dbh->ping() ) {
+        $log->errorf( q{[dbi] connection lost contact for '%s'}, $db );
+        exit 1;
+    }
 }
 
 sub fetchall {

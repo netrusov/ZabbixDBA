@@ -1,6 +1,4 @@
-#!/usr/bin/env perl
-
-package Connector;
+package Dispatcher;
 
 use 5.010;
 use strict;
@@ -16,7 +14,7 @@ sub new {
 
 sub connect {
     my $self = shift;
-    my ( $db, $conf, $log, $sender ) = @$self{qw|db conf log sender|};
+    my ( $db, $conf, $log, $sender ) = @{ $self->{qw|db conf log sender|} };
 
     my $opts = {
         PrintError => 0,
@@ -52,21 +50,13 @@ sub connect {
         $log->infof( q{[dbi] connected to '%s@%s' (%s)},
             $user, $db, $conf->{$db}->{dsn} );
     }
-
     $self->{dbh} = $dbh;
 
     return $alive;
 }
 
-sub disconnect {
-    my $self = shift;
-    $self->{dbh}->disconnect();
-    return 1;
-}
-
-sub selectall_arrayref {
-    my $self = shift;
-    my ( $query_name, $query, $opts, @bind_values ) = @_;
+sub fetchall {
+    my ( $self, $query_name, $query, $opts, @bind_values ) = @_;
     my ( $db, $dbh, $log ) = @$self{qw|db dbh log|};
 
     my $result = $dbh->selectall_arrayref( $query, $opts, @bind_values );
@@ -83,34 +73,38 @@ sub selectall_arrayref {
     return $result;
 }
 
+sub disconnect {
+    my $self = shift;
+    $self->{dbh}->disconnect();
+    return 1;
+}
+
 sub set {
     my $self = shift;
     my $args = {@_};
     $self->{$_} = $args->{$_} for ( keys %{$args} );
     return 1;
 }
-sub ping {
 
-    my $self = shift;
+sub data {
+    my ( $self, @data ) = @_;
+    push @{ $self->{data} }, @data;
+    return 1;
+}
 
-    my ( $db, $dbh, $log, $sender ) = @$self{qw|db dbh log sender|};
-
-    my $alive = 1;
-
-    if ( !$dbh->ping() ) {
-        $log->errorf( q{[dbi] connection lost contact for '%s'}, $db );
-
-        $alive = 0;
-    }
-
+sub send {
+    my ( $self, @data )   = @_;
+    my ( $log,  $sender ) = @{ $self->{qw|log sender|} };
     try {
-        $sender->send( [ $db, 'alive', $alive ] );
+        $sender->send( @{ $self->{data} } );
     }
     catch {
-        $log->errorf( q{[sender] %s}, $_ );
+        $log->warnf( q{[sender] %s}, $_ );
     };
 
-    return $alive;
+    undef $self->{data};
+
+    return 1;
 }
 
 1;

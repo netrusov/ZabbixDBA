@@ -1,13 +1,11 @@
 #!/usr/bin/env perl
-
 package main;
 
 use 5.010;
 use strict;
 use warnings FATAL => 'all';
 use sigtrap 'handler', \&stop, 'normal-signals';
-
-use threads;
+use threads 'exit' => 'threads_only';
 use threads::shared;
 
 use English qw(-no_match_vars);
@@ -16,13 +14,13 @@ use FindBin ();
 use lib "$FindBin::Bin/lib";
 use Time::HiRes ();
 use Try::Tiny;
-
+use List::MoreUtils ();
 use Log::Log4perl qw/:easy/;
 use Log::Any qw($log);
 use Log::Any::Adapter;
 
 use Constants;
-use Connector;
+use Dispatcher;
 use Configurator;
 use Zabbix::Discoverer;
 use Zabbix::Sender;
@@ -38,7 +36,7 @@ my ($confile) = @ARGV;
 my $running : shared = 1;
 my $conf : shared   = shared_clone( {} );
 my $sender : shared = shared_clone( {} );
-my $threads         = {};
+my $dbpool          = {};
 my $counter         = {};
 
 sub stop {
@@ -47,14 +45,15 @@ sub stop {
 
     while ( threads->list(threads::all) ) {
         for ( threads->list(threads::all) ) {
-            $_->join() if $_->is_joinable();
+            $_->kill('INT')->join();
         }
     }
 
     return 1;
 }
 
-$log->infof( q{[main] starting %s monitoring plugin}, $PROJECT_NAME );
+$log->infof( q{[main] starting %s monitoring plugin, version %s},
+    $PROJECT_NAME, $VERSION );
 
 while ($running) {
 
@@ -90,17 +89,23 @@ while ($running) {
             next;
         }
 
-        if ( $threads->{$db} ) {
-            if ( $threads->{$db}->is_running() ) {
+        if ( $dbpool->{$db} ) {
+            if ( $dbpool->{$db}->is_running() ) {
                 next;
             }
 
             count($db) or next;
         }
 
-        $threads->{$db} = threads->create( { 'exit' => 'thread_only' },
-            'start_thread', $db );
+        $dbpool->{$db} = threads->create( 'start_thread', $db );
+    }
 
+    for my $db ( keys %{$dbpool} ) {
+        if ( !List::MoreUtils::any {m/$db/ms} @{ $conf->{database_list} } ) {
+            $dbpool->{$db}->kill('INT')->join();
+            delete $dbpool->{$db};
+            delete $counter->{$db};
+        }
     }
 
     sleep( $conf->{daemon}->{sleep} // $SLEEP );
@@ -112,7 +117,12 @@ sub count {
     my $rc = 1;
 
     if ( defined $counter->{$db} ) {
-        --$rc if --$counter->{$db} > 0;
+        if ( --$counter->{$db} > 0 ) {
+            --$rc;
+        }
+        else {
+            delete $counter->{$db};
+        }
     }
     else {
         $counter->{$db} = $conf->{$db}->{retry_count} // $RETRY_COUNT;
@@ -125,20 +135,23 @@ sub count {
 sub start_thread {
     my ($db) = @_;
 
-    my $conn = Connector->new(
+    my $dispatcher = Dispatcher->new(
         db     => $db,
         conf   => $conf,
         log    => $log,
         sender => $sender
     );
 
-    $conn->connect() or exit 1;
+    $dispatcher->connect() or exit 1;
 
-    while ($running) {
+    my $trunning = 1;
+    local $SIG{INT} = sub { $trunning = 0 };
 
-        $conn->set( conf => $conf, sender => $sender );
+    while ( $running && $trunning ) {
 
-        $conn->ping() or exit 1;
+        $dispatcher->set( conf => $conf, sender => $sender );
+
+        $dispatcher->ping() or exit 1;
 
         my $ql;
 
@@ -166,30 +179,31 @@ sub start_thread {
         }
 
         my $start = [Time::HiRes::gettimeofday];
-        my @data;
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
             my $result
-                = $conn->selectall_arrayref( $rule, $v->{query},
-                { Slice => {} } )
+                = $dispatcher->fetchall( $rule, $v->{query}, { Slice => {} } )
                 or next;
 
             if ( defined $result ) {
-                push @data,
-                    Zabbix::Discoverer::rule( $db, $rule, $result,
-                    $v->{keys} );
+                $dispatcher->data(
+                    Zabbix::Discoverer::rule(
+                        $db, $rule, $result, $v->{keys}
+                    )
+                );
             }
         }
 
         while ( my ( $item, $v ) = each %{ $ql->{discovery}->{item} } ) {
             my $result
-                = $conn->selectall_arrayref( $item, $v->{query},
-                { Slice => {} } )
+                = $dispatcher->fetchall( $item, $v->{query}, { Slice => {} } )
                 or next;
 
             if ( defined $result ) {
-                push @data,
-                    Zabbix::Discoverer::item( $db, $item, $result,
-                    $v->{keys} );
+                $dispatcher->data(
+                    Zabbix::Discoverer::item(
+                        $db, $item, $result, $v->{keys}
+                    )
+                );
             }
         }
 
@@ -197,7 +211,7 @@ sub start_thread {
             if ( !$ql->{$query} ) {
                 next;
             }
-            my $arrayref = $conn->selectall_arrayref(
+            my $arrayref = $dispatcher->fetchall(
                 $query, $ql->{$query}->{query},
                 undef,  @{ $ql->{$query}->{bind_values} }
             ) or next;
@@ -213,31 +227,32 @@ sub start_thread {
             }
 
             if ( $ql->{$query}->{send_to} ) {
-                push @data, [ $_, $query, $result ]
+                $dispatcher->data( [ $_, $query, $result ] )
                     for @{ $ql->{$query}->{send_to} };
             }
             else {
-                push @data, [ $db, $query, $result ];
+                $dispatcher->data( [ $db, $query, $result ] );
             }
         }
 
-        try {
-            $sender->send(@data);
-        }
-        catch {
-            $log->warnf( q{[sender] %s}, $_ );
-        };
+        $dispatcher->send();
 
-        undef @data;
         $log->infof( q{[thread] completed fetching data on '%s', elapsed: %s},
             $db,
             Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] ) );
 
-        sleep( $conf->{$db}->{sleep} // $SLEEP );
+        # sleep( $conf->{$db}->{sleep} // $SLEEP );
+        # this sh*t was created because threads module does not
+        # actually send kill signals via the OS, but emulates them
+        # don't blame me
+        for ( 1 ... $conf->{$db}->{sleep} // $SLEEP ) {
+            last if !( $running && $trunning );
+            sleep 1;
+        }
     }
 
     $log->infof( q{[dbi] disconnecting from '%s'}, $db );
-    $conn->disconnect();
+    $dispatcher->disconnect();
 
     return 1;
 }

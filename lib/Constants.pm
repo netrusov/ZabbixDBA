@@ -6,7 +6,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use Readonly;
-require Exporter;
+use Exporter;
 
 our @ISA    = qw(Exporter);
 our @EXPORT = qw(
@@ -16,7 +16,7 @@ our @EXPORT = qw(
     *SLEEP
 );
 
-Readonly our $VERSION      => '2.000';
+Readonly our $VERSION      => '2.001';
 Readonly our $PROJECT_NAME => 'ZabbixDBA';
 Readonly our $RETRY_COUNT  => 2;
 Readonly our $SLEEP        => 120;

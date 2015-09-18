@@ -59,7 +59,7 @@ sub ping {
     my $self = shift;
     my ( $db, $dbh, $log ) = @$self{qw|db dbh log|};
 
-    if ( $dbh->ping() ) {
+    if ( !$dbh->ping() ) {
         $log->errorf( q{[dbi] connection lost contact for '%s'}, $db );
         exit 1;
     }

@@ -57,12 +57,23 @@ sub connect {
 
 sub ping {
     my $self = shift;
-    my ( $db, $dbh, $log ) = @$self{qw|db dbh log|};
+    my ( $db, $dbh, $log, $sender ) = @$self{qw|db dbh log sender|};
+
+    my $alive = 1;
 
     if ( !$dbh->ping() ) {
         $log->errorf( q{[dbi] connection lost contact for '%s'}, $db );
-        exit 1;
+        $alive = 0;
     }
+
+    try {
+        $sender->send( [ $db, 'alive', $alive ] );
+    }
+    catch {
+        $log->warnf( q{[sender] %s}, $_ );
+    };
+
+    return $alive;
 }
 
 sub fetchall {

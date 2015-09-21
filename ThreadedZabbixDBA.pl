@@ -45,7 +45,7 @@ sub stop {
 
     while ( threads->list(threads::all) ) {
         for ( threads->list(threads::all) ) {
-            $_->kill('INT')->join();
+            $_->join() if $_->is_joinable();
         }
     }
 
@@ -63,7 +63,7 @@ while ($running) {
         $conf = shared_clone( Configurator->new($confile) );
     }
     catch {
-        $log->errorf( q{[configurator] %s}, $_ );
+        $log->fatalf( q{[configurator] %s}, $_ );
         Carp::confess $_;
     };
 
@@ -75,7 +75,7 @@ while ($running) {
         );
     }
     catch {
-        $log->errorf( q{[sender] %s}, $_ );
+        $log->fatalf( q{[sender] %s}, $_ );
         Carp::confess $_;
     };
 
@@ -93,7 +93,6 @@ while ($running) {
             if ( $dbpool->{$db}->is_running() ) {
                 next;
             }
-
             count($db) or next;
         }
 
@@ -174,7 +173,7 @@ sub start_thread {
                 );
             }
             catch {
-                $log->errorf( q{[configurator] %s}, $_ );
+                $log->warnf( q{[configurator] %s}, $_ );
             };
         }
 
@@ -237,9 +236,12 @@ sub start_thread {
 
         $dispatcher->send();
 
-        $log->infof( q{[thread] completed fetching data on '%s', elapsed: %s},
+        $log->infof(
+            q{[thread:%d] completed fetching data on '%s', elapsed: %s},
+            threads->tid(),
             $db,
-            Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] ) );
+            Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] )
+        );
 
         # sleep( $conf->{$db}->{sleep} // $SLEEP );
         # this sh*t was created because threads module does not

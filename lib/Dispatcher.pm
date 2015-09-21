@@ -116,7 +116,6 @@ sub data {
 sub send {
     my ( $self, @data )   = @_;
     my ( $log,  $sender ) = @$self{qw|log sender|};
-    
     try {
         $sender->send( @{ $self->{data} } );
     }

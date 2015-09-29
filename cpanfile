@@ -8,6 +8,7 @@ requires "Safe" => "0";
 requires "FindBin" => "0";
 requires "DBI" => "0";
 requires "Parallel::ForkManager" => "0";
+requires "List::MoreUtils" => "0";
 requires "Log::Any" => "0";
 requires "Log::Any::Adapter::Log4perl" => "0";
 requires "Log::Log4perl" => "0";

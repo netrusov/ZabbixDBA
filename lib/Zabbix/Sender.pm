@@ -10,14 +10,13 @@ use JSON ();
 use IO::Socket::INET;
 
 sub new {
-    my ( $class, @server_list ) = @_;
-    my $self = { server_list => \@server_list };
-    return bless $self, $class;
+    my $class = shift;
+    return bless {@_}, $class;
 }
 
 sub send {
     my ( $self, @data ) = @_;
-    for my $server ( @{ $self->{server_list} } ) {
+    for my $server ( values %{$self} ) {
 
         for (@data) {
             if ( !ref ) {

@@ -7,13 +7,9 @@ use English qw(-no_match_vars);
 
 use JSON ();
 
-sub new {
-    return bless {}, shift;
-}
-
 sub rule {
-    my ( $self, $db, $rule, $result, $keys ) = @_;
-    
+    my ( $db, $rule, $result, $keys ) = @_;
+
     my $data = { data => [] };
     for my $row ( @{$result} ) {
         push @{ $data->{data} },
@@ -26,7 +22,7 @@ sub rule {
 }
 
 sub item {
-    my ( $self, $db, $item, $result, $keys ) = @_;
+    my ( $db, $item, $result, $keys ) = @_;
     my @data;
     for my $row ( @{$result} ) {
         for ( keys %{$keys} ) {

@@ -40,7 +40,8 @@ my $dbpool          = {};
 my $counter         = {};
 
 sub stop {
-    $log->infof( q{[main] stopping %s monitoring plugin}, $PROJECT_NAME );
+    $log->infof( q{[main:%d] stopping %s monitoring plugin, version %s},
+        $PROCESS_ID, $PROJECT_NAME, $VERSION );
     $running = 0;
 
     while ( threads->list(threads::all) ) {
@@ -52,8 +53,8 @@ sub stop {
     return 1;
 }
 
-$log->infof( q{[main] starting %s monitoring plugin, version %s},
-    $PROJECT_NAME, $VERSION );
+$log->infof( q{[main:%d] starting %s monitoring plugin, version %s},
+    $PROCESS_ID, $PROJECT_NAME, $VERSION );
 
 while ($running) {
 
@@ -95,18 +96,19 @@ while ($running) {
             }
             count($db) or next;
         }
-
         $dbpool->{$db} = threads->create( 'start_thread', $db );
     }
 
     for my $db ( keys %{$dbpool} ) {
         if ( !List::MoreUtils::any {m/$db/ms} @{ $conf->{database_list} } ) {
+            $log->infof(
+                q{[main:%d] %s is gone from configuration, stopping thread},
+                $PROCESS_ID, $db );
             $dbpool->{$db}->kill('INT')->join();
             delete $dbpool->{$db};
             delete $counter->{$db};
         }
     }
-
     sleep( $conf->{daemon}->{sleep} // $SLEEP );
 }
 
@@ -127,7 +129,6 @@ sub count {
         $counter->{$db} = $conf->{$db}->{retry_count} // $RETRY_COUNT;
         --$rc;
     }
-
     return $rc;
 }
 

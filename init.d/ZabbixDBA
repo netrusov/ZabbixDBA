@@ -3,15 +3,19 @@
 # chkconfig: 35 90 12
 # description: ZabbixDBA monitoring service
 
-. /etc/init.d/functions
-. /opt/ZabbixDBA/settings.sh
+source /etc/init.d/functions
+source /opt/ZabbixDBA/settings.sh
+
+if [[ ! ${RUN_AS} ]]; then
+    RUN_AS=root
+fi
 
 start() {
     if [[ -e "$LOCKFILE" ]]; then
         echo 'Service is already running with pid' $(cat "$PIDFILE")
     else
         echo -n 'Starting ZabbixDBA service: '
-        $PERL_BIN /opt/ZabbixDBA/ZabbixDBA.pl "$CONFIG" &
+        su - "${RUN_AS}" -c "$PERL_BIN /opt/ZabbixDBA/ZabbixDBA.pl '$CONFIG'" &
         sleep 1
         if ! ps -p $! > /dev/null; then
             failure $"ZabbixDBA failed to start"

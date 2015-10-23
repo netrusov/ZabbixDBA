@@ -16,7 +16,7 @@ our @EXPORT = qw(
     *SLEEP
 );
 
-Readonly our $VERSION      => '2.001';
+Readonly our $VERSION      => '2.010';
 Readonly our $PROJECT_NAME => 'ZabbixDBA';
 Readonly our $RETRY_COUNT  => 2;
 Readonly our $SLEEP        => 120;

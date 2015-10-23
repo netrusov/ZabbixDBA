@@ -109,6 +109,11 @@ while ($running) {
             delete $counter->{$db};
         }
     }
+
+    for ( threads->list(threads::all) ) {
+        $_->join() if !$_->is_running();
+    }
+
     sleep( $conf->{daemon}->{sleep} // $SLEEP );
 }
 

@@ -6,7 +6,7 @@ use strict;
 use warnings FATAL => 'all';
 use sigtrap 'handler', \&stop, 'normal-signals';
 use forks;
-use threads::shared;
+use forks::shared;
 
 use English qw(-no_match_vars);
 use Carp    ();

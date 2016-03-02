@@ -1,6 +1,7 @@
 requires "perl" => "5.010";
 requires "strict" => "0";
 requires "warnings" => "0";
+requires "forks" => "0";
 requires "English" => "0";
 requires "Carp" => "0";
 requires "Data::Dumper" => "0";

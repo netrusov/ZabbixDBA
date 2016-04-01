@@ -2,3 +2,5 @@
 .includepath
 .project
 tmp/
+*.bak
+*.tdy

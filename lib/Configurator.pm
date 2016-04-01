@@ -1,37 +1,45 @@
 package Configurator;
 
-use 5.010;
 use strict;
 use warnings;
 use English qw(-no_match_vars);
+
 use Carp         ();
 use Data::Dumper ();
 
-my $config_file;
+use Moo;
 
-sub new {
-    my ( $class, $file ) = @_;
+has file => (
+    is       => 'ro',
+    required => 1,
+    isa      => sub { Carp::confess "Not a valid file: $_[0]" unless -f $_[0] }
+);
 
-    Carp::confess 'No file specified' if ( !defined $file );
-    Carp::confess "Not a valid file: $file" if ( !-f $file );
+has conf => ( is => 'rw' );
 
-    my $self = {};
+no Moo;
 
-    if ( !eval { $self = do($file) } ) {
-        Carp::confess "Failure compiling '$file': " . $EVAL_ERROR;
+sub BUILD { shift->load() }
+
+sub load {
+    my ($self) = @_;
+
+    my $conf = {};
+
+    if ( !eval { $conf = do( $self->file() ) } ) {
+        Carp::confess sprintf "Failure compiling '%s': %s", $self->file(),
+          $EVAL_ERROR;
     }
 
-    $config_file = $file;
+    $self->conf($conf);
 
-    return bless $self, $class;
+    return 1;
 }
 
 sub merge {
-
-    # Hope this will work fine
     my ( $self, $source ) = @_;
 
-    if ( !$source ) { return; }
+    return if !$source;
 
     for ( keys %{$source} ) {
         if ( $self->{$_} ) {
@@ -53,20 +61,19 @@ sub merge {
 sub save {
     my ( $self, $to ) = @_;
 
-    my $file = $to // $config_file;
+    my $file = $to // $self->file();
 
     open my $fh, '>', $file
-        or Carp::confess "Failed to open '$file': " . $OS_ERROR;
-    print {$fh} Data::Dumper->Dump( [$self] )
-        or Carp::confess "Failed to write to '$file': " . $OS_ERROR;
+      or Carp::confess "Failed to open '$file': " . $OS_ERROR;
+    print {$fh} $self->dump()
+      or Carp::confess "Failed to write to '$file': " . $OS_ERROR;
     close $fh or Carp::confess 'Failed to close filehandle: ' . $OS_ERROR;
 
     return 1;
 }
 
 sub dump {
-    print Data::Dumper->Dump( [shift] );
-    return 1;
+    return Data::Dumper->Dump( [ shift->conf() ] );
 }
 
 1;

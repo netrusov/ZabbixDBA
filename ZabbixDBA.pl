@@ -1,111 +1,72 @@
 #!/usr/bin/env perl
 package main;
 
-use 5.010;
 use strict;
 use warnings FATAL => 'all';
-use sigtrap 'handler', \&stop, 'normal-signals';
 use forks;
-use forks::shared;
+use sigtrap 'handler', \&stop, 'normal-signals';
 
 use English qw(-no_match_vars);
 use Carp    ();
 use FindBin ();
 use lib "$FindBin::Bin/lib";
-use Time::HiRes ();
+
 use Try::Tiny;
 use List::MoreUtils ();
-use Log::Log4perl qw/:easy/;
-use Log::Any qw($log);
-use Log::Any::Adapter;
 
-use Constants;
-use Dispatcher;
 use Configurator;
 use Zabbix::Discoverer;
 use Zabbix::Sender;
 
-Log::Log4perl::init("$FindBin::Bin/conf/log4perl.conf");
-Log::Any::Adapter->set('Log4perl');
+use ZDBA::Constants;
+use ZDBA::Dispatcher;
 
 if ( !@ARGV ) {
     Carp::confess 'Usage: perl ZabbixDBA.pl /path/to/config.pl &';
 }
 
 my ($confile) = @ARGV;
-my $running : shared = 1;
-my $conf : shared   = shared_clone( {} );
-my $sender : shared = shared_clone( {} );
-my $dbpool          = {};
+my $running = 1;
+my $pool          = {};
 my $counter         = {};
 
-sub stop {
-    $log->infof( q{[main:%d] stopping %s monitoring plugin, version %s},
-        $PROCESS_ID, $PROJECT_NAME, $VERSION );
-    $running = 0;
+my $c = Configurator->new($confile);
 
+sub stop {
+    $running = 0;
+    
     while ( threads->list(threads::all) ) {
-        for ( threads->list(threads::all) ) {
-            $_->join() if $_->is_joinable();
-        }
+            $_->kill('INT')->join() for threads->list(threads::all);
     }
 
     return 1;
 }
 
-$log->infof( q{[main:%d] starting %s monitoring plugin, version %s},
-    $PROCESS_ID, $PROJECT_NAME, $VERSION );
-
 while ($running) {
+    $c->load();
 
-    # Reloading configuration file to see if
-    # values were changed (no need to restart daemon)
-    try {
-        $conf = shared_clone( Configurator->new($confile) );
-    }
-    catch {
-        $log->fatalf( q{[configurator] %s}, $_ );
-        Carp::confess $_;
-    };
-
-    try {
-        $sender = shared_clone(
-            Zabbix::Sender->new(
-                map { $_ => $conf->{$_} } @{ $conf->{zabbix_server_list} }
-            )
-        );
-    }
-    catch {
-        $log->fatalf( q{[sender] %s}, $_ );
-        Carp::confess $_;
-    };
-
-    for my $db ( @{ $conf->{database_list} } ) {
-        if ( !$conf->{$db} ) {
+    for my $db ( @{ $c->conf()->{db}{list} } ) {
+        if ( !$c->conf()->{db}{$db} ) {
             count($db) or next;
-            $log->errorf(
-                q{[configurator] configuration of '%s' is not described in '%s'},
-                $db, $confile
-            );
             next;
         }
 
-        if ( $dbpool->{$db} ) {
-            if ( $dbpool->{$db}->is_running() ) {
+        if ( $pool->{$db} ) {
+            if ( $pool->{$db}->is_running() ) {
                 next;
             }
             count($db) or next;
         }
-        $dbpool->{$db} = threads->create( 'start_thread', $db );
+
+        $pool->{$db} = threads->create( 'start', $db );
     }
 
-    for my $db ( keys %{$dbpool} ) {
-        if ( !List::MoreUtils::any {m/$db/ms} @{ $conf->{database_list} } ) {
-            $log->infof(
-                q{[main:%d] %s is gone from configuration, stopping thread},
-                $PROCESS_ID, $db );
-            $dbpool->{$db}->kill('INT')->join();
-            delete $dbpool->{$db};
+    for my $db ( keys %{$pool} ) {
+        if ( !List::MoreUtils::any { m/$db/ms }
+            @{ $c->conf()->{db}{list} } )
+        {
+            $pool->{$db}->kill('INT')->join();
+            delete $pool->{$db};
             delete $counter->{$db};
         }
     }
@@ -114,7 +75,7 @@ while ($running) {
         $_->join() if !$_->is_running();
     }
 
-    sleep( $conf->{daemon}->{sleep} // $SLEEP );
+    sleep( $c->conf()->{daemon}{sleep} // $SLEEP );
 }
 
 sub count {
@@ -131,19 +92,19 @@ sub count {
         }
     }
     else {
-        $counter->{$db} = $conf->{$db}->{retry_count} // $RETRY_COUNT;
+        $counter->{$db} = $c->conf()->{db}{$db}{retry_count} // $RETRY_COUNT;
         --$rc;
     }
+
     return $rc;
 }
 
-sub start_thread {
+sub start {
     my ($db) = @_;
 
     my $dispatcher = Dispatcher->new(
         db     => $db,
-        conf   => $conf,
-        log    => $log,
+        conf   => $c,
         sender => $sender
     );
 
@@ -154,28 +115,17 @@ sub start_thread {
 
     while ( $running && $trunning ) {
 
-        $dispatcher->set( conf => $conf, sender => $sender );
+        $dispatcher->set( conf => $c, sender => $sender );
 
         $dispatcher->ping() or exit 1;
 
-        my $ql;
+        my $ql = Configurator->new( $c->conf()->{db}{$db}{query_list}
+                  // $c->conf()->{db}{default}{query_list} );
 
-        try {
-            $ql
-                = Configurator->new( $conf->{$db}->{query_list_file}
-                    // $conf->{default}->{query_list_file} );
-        }
-        catch {
-            $log->errorf( q{[configurator] %s}, $_ );
-            exit 1;
-        };
-
-        if ( $conf->{$db}->{extra_query_list_file} ) {
+        if ( $c->conf()->{$db}->{extra_query_list} ) {
             try {
                 $ql->merge(
-                    Configurator->new(
-                        $conf->{$db}->{extra_query_list_file}
-                    )
+                    Configurator->new( $c->conf()->{$db}->{extra_query_list} )
                 );
             }
             catch {
@@ -183,31 +133,26 @@ sub start_thread {
             };
         }
 
-        my $start = [Time::HiRes::gettimeofday];
         while ( my ( $rule, $v ) = each %{ $ql->{discovery}->{rule} } ) {
-            my $result
-                = $dispatcher->fetchall( $rule, $v->{query}, { Slice => {} } )
-                or next;
+            my $result =
+              $dispatcher->fetchall( $rule, $v->{query}, { Slice => {} } )
+              or next;
 
             if ( defined $result ) {
                 $dispatcher->data(
-                    Zabbix::Discoverer::rule(
-                        $db, $rule, $result, $v->{keys}
-                    )
+                    Zabbix::Discoverer::rule( $db, $rule, $result, $v->{keys} )
                 );
             }
         }
 
         while ( my ( $item, $v ) = each %{ $ql->{discovery}->{item} } ) {
-            my $result
-                = $dispatcher->fetchall( $item, $v->{query}, { Slice => {} } )
-                or next;
+            my $result =
+              $dispatcher->fetchall( $item, $v->{query}, { Slice => {} } )
+              or next;
 
             if ( defined $result ) {
                 $dispatcher->data(
-                    Zabbix::Discoverer::item(
-                        $db, $item, $result, $v->{keys}
-                    )
+                    Zabbix::Discoverer::item( $db, $item, $result, $v->{keys} )
                 );
             }
         }
@@ -233,7 +178,7 @@ sub start_thread {
 
             if ( $ql->{$query}->{send_to} ) {
                 $dispatcher->data( [ $_, $query, $result ] )
-                    for @{ $ql->{$query}->{send_to} };
+                  for @{ $ql->{$query}->{send_to} };
             }
             else {
                 $dispatcher->data( [ $db, $query, $result ] );
@@ -242,17 +187,9 @@ sub start_thread {
 
         $dispatcher->send();
 
-        $log->infof(
-            q{[thread:%d] completed fetching data on '%s', elapsed: %s},
-            threads->tid(),
-            $db,
-            Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] )
-        );
-
-        sleep( $conf->{$db}->{sleep} // $SLEEP );
+        sleep( $c->conf()->{$db}->{sleep} // $SLEEP );
     }
 
-    $log->infof( q{[dbi] disconnecting from '%s'}, $db );
     $dispatcher->disconnect();
 
     return 1;

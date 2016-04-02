@@ -1,7 +1,7 @@
 {
     zabbix => {
-        server => '192.168.1.100',
-        port   => 10051,
+        server  => '192.168.1.100',
+        port    => 10051,
         timeout => 30,
     },
     daemon => {

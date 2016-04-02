@@ -64,7 +64,7 @@ sub _connect {
 sub _disconnect {
     my ($self) = @_;
 
-    return unless $self->_socket();
+    return 1 unless $self->_socket();
 
     $self->_socket()->close();
 
@@ -101,9 +101,7 @@ sub _pack {
 sub _encode_request {
     my ( $self, $data ) = @_;
 
-    my $out = $self->_pack( $self->_json()->encode($data) );
-
-    return $out;
+    return $self->_pack( $self->_json()->encode($data) );
 }
 
 sub _send {
@@ -137,10 +135,13 @@ sub send {
             push @{ $request->{data} }, $host_data;
         }
 
-        $self->_send( $self->_encode_request($request) );
+        $self->_send( $self->_encode_request($request) )
+          if @{ $request->{data} };
     }
 
     return 1;
 }
 
 1;
+
+__END__

@@ -2,7 +2,7 @@ package ZDBA;
 use strict;
 use warnings FATAL => 'all';
 
-use File::Basename qw(dirname);
+use File::Basename ();
 use File::Spec ();
 use Try::Tiny;
 use List::MoreUtils ();
@@ -39,7 +39,7 @@ sub monitor {
     my $controller = ZDBA::Controller->new(
         db      => $db,
         dbconf  => $c->conf()->{db}{$db},
-        default => $c->conf()->{default}
+        default => $c->conf()->{db}{default}
     );
 
     if ( $controller->connect() ) {
@@ -65,7 +65,7 @@ sub monitor {
             file => File::Spec->rel2abs(
                 $c->conf()->{db}{$db}{query_list}
                   // $c->conf()->{db}{default}{query_list},
-                basname( $c->file() )
+                File::Basename::dirname( $c->file() )
             )
         );
 
@@ -75,7 +75,7 @@ sub monitor {
                     Configurator->new(
                         file => File::Spec->rel2abs(
                             $c->conf()->{db}{$db}{extra_query_list},
-                            basname( $c->conf()->file() )
+                            File::Basename::dirname( $c->conf()->file() )
                         )
                     )->conf()
                 );

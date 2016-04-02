@@ -1,4 +1,4 @@
-package Dispatcher;
+package ZDBA::Controller;
 
 use strict;
 use warnings FATAL => 'all';

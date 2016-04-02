@@ -7,12 +7,14 @@ use English qw(-no_match_vars);
 use Carp         ();
 use Data::Dumper ();
 
+use Cwd ();
+
 use Moo;
 
 has file => (
     is       => 'ro',
     required => 1,
-    isa      => sub { Carp::confess "Not a valid file: $_[0]" unless -f $_[0] }
+    coerce   => sub { Cwd::realpath( $_[0] ) }
 );
 
 has conf => ( is => 'rw' );
@@ -77,3 +79,5 @@ sub dump {
 }
 
 1;
+
+__END__

@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 
 use Moo::Role;
 
-with 'MooseX::Log::Log4perl';
+with 'MooX::Log::Any';
 
 has VERSION      => ( is => 'ro', default => '3.000' );
 has PROJECT_NAME => ( is => 'ro', default => 'ZabbixDBA' );

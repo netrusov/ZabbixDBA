@@ -4,7 +4,6 @@ use strict;
 use warnings FATAL => 'all';
 
 use DBI;
-use Try::Tiny;
 
 use Moo;
 

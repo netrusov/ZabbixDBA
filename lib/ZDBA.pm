@@ -43,10 +43,10 @@ sub monitor {
     );
 
     if ( $controller->connect() ) {
-        $sender->send( [ $self->db(), 'alive', 1 ] );
+        $sender->send( [ $db, 'alive', 1 ] );
     }
     else {
-        $sender->send( [ $self->db(), 'alive', 0 ] );
+        $sender->send( [ $db, 'alive', 0 ] );
         exit 1;
     }
 
@@ -54,10 +54,10 @@ sub monitor {
         $c->load();
 
         if ( $controller->ping() ) {
-            $sender->send( [ $self->db(), 'alive', 1 ] );
+            $sender->send( [ $db, 'alive', 1 ] );
         }
         else {
-            $sender->send( [ $self->db(), 'alive', 0 ] );
+            $sender->send( [ $db, 'alive', 0 ] );
             exit 1;
         }
 

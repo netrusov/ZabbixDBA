@@ -11,6 +11,16 @@ use Carp    ();
 use FindBin ();
 use lib "$FindBin::Bin/lib";
 
+use Log::Log4perl qw(:easy);
+use Log::Any::Adapter;
+
+BEGIN {
+    chdir $FindBin::Bin;
+
+    Log::Log4perl::init("$FindBin::Bin/conf/log4perl.conf");
+    Log::Any::Adapter->set('Log4perl');
+}
+
 use ZDBA;
 
 if ( !@ARGV ) {

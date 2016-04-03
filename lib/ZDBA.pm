@@ -1,9 +1,10 @@
 package ZDBA;
+
 use strict;
 use warnings FATAL => 'all';
 
 use File::Basename ();
-use File::Spec ();
+use File::Spec     ();
 use Try::Tiny;
 use List::MoreUtils ();
 
@@ -32,7 +33,15 @@ sub monitor {
 
     local $SIG{INT} = sub { $running = 0 };
 
-    my $c = Configurator->new( file => $self->confile() );
+    my $c;
+
+    try {
+        $c = Configurator->new( file => $self->confile() );
+    }
+    catch {
+        $self->log()->fatalf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
+        exit 1;
+    };
 
     my $sender = Zabbix::Sender->new( $c->conf()->{zabbix} );
 
@@ -42,10 +51,7 @@ sub monitor {
         default => $c->conf()->{db}{default}
     );
 
-    if ( $controller->connect() ) {
-        $sender->send( [ $db, 'alive', 1 ] );
-    }
-    else {
+    if ( !$controller->connect() ) {
         $sender->send( [ $db, 'alive', 0 ] );
         exit 1;
     }
@@ -53,21 +59,28 @@ sub monitor {
     while ($running) {
         $c->load();
 
-        if ( $controller->ping() ) {
-            $sender->send( [ $db, 'alive', 1 ] );
-        }
-        else {
+        if ( !$controller->ping() ) {
             $sender->send( [ $db, 'alive', 0 ] );
             exit 1;
         }
 
-        my $ql = Configurator->new(
-            file => File::Spec->rel2abs(
-                $c->conf()->{db}{$db}{query_list}
-                  // $c->conf()->{db}{default}{query_list},
-                File::Basename::dirname( $c->file() )
-            )
-        );
+        $sender->send( [ $db, 'alive', 1 ] );
+
+        my $ql;
+
+        try {
+            $ql = Configurator->new(
+                file => File::Spec->rel2abs(
+                    $c->conf()->{db}{$db}{query_list}
+                      // $c->conf()->{db}{default}{query_list},
+                    File::Basename::dirname( $c->file() )
+                )
+            );
+        }
+        catch {
+            $self->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
+            exit 1;
+        };
 
         if ( $c->conf()->{db}{$db}{extra_query_list} ) {
             try {
@@ -75,17 +88,22 @@ sub monitor {
                     Configurator->new(
                         file => File::Spec->rel2abs(
                             $c->conf()->{db}{$db}{extra_query_list},
-                            File::Basename::dirname( $c->conf()->file() )
+                            File::Basename::dirname( $c->file() )
                         )
                     )->conf()
                 );
             }
             catch {
-                $self->log()->warnf( q{[configurator] %s}, $_ );
+                $self->log()->warnf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
             };
         }
 
         my @data;
+
+        $self->log()->debugf( q{[%s:%d] started fetching data on '%s'},
+            __PACKAGE__, __LINE__, $db );
+
+        my $start = [Time::HiRes::gettimeofday];
 
         for my $query ( @{ $ql->conf()->{query_list} } ) {
             next unless $ql->conf()->{$query};
@@ -114,9 +132,17 @@ sub monitor {
             }
         }
 
+        $self->log()->infof(
+            q{[%s:%d] completed fetching data on '%s', elapsed: %s},
+            __PACKAGE__,
+            __LINE__,
+            $db,
+            Time::HiRes::tv_interval( $start, [Time::HiRes::gettimeofday] )
+        );
+
         $sender->send(@data);
 
-        sleep( $c->conf()->{$db}->{sleep} // __PACKAGE__->SLEEP() );
+        sleep( $c->conf()->{$db}->{sleep} // $self->SLEEP() );
     }
 
     $controller->disconnect();

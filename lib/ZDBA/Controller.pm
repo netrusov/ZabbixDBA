@@ -35,7 +35,8 @@ sub connect {
     };
 
     if ( !$self->dbconf()->{dsn} ) {
-        $self->log()->warnf( q{[dbi] DSN not specified for %s}, $self->db() );
+        $self->log()->warnf( q{[%s:%d] DSN not specified for %s},
+            __PACKAGE__, __LINE__, $self->db() );
         return;
     }
 
@@ -48,14 +49,14 @@ sub connect {
       DBI->connect_cached( $self->dbconf()->{dsn}, $user, $pass, $opts );
 
     if ( DBI->errstr() ) {
-        $self->log()->errorf( q{[dbi] connection failed for '%s@%s' : %s},
-            $user, $self->db(), DBI->errstr() );
+        $self->log()->errorf( q{[%s:%d] connection failed for '%s@%s' : %s},
+            __PACKAGE__, __LINE__, $user, $self->db(), DBI->errstr() );
         $alive = 0;
     }
 
     if ($alive) {
-        $self->log()->infof( q{[dbi] connected to '%s@%s' (%s)},
-            $user, $self->db(), $self->dbconf()->{dsn} );
+        $self->log()->infof( q{[%s:%d] connected to '%s@%s' (%s)},
+            __PACKAGE__, __LINE__, $user, $self->db(), $self->dbconf()->{dsn} );
     }
 
     $self->dbh($dbh);
@@ -69,8 +70,8 @@ sub ping {
     my $alive = 1;
 
     if ( !$self->dbh()->ping() ) {
-        $self->log()
-          ->errorf( q{[dbi] connection lost contact for '%s'}, $self->db() );
+        $self->log()->errorf( q{[%s:%d] connection lost contact for '%s'},
+            __PACKAGE__, __LINE__, $self->db() );
         $alive = 0;
     }
 
@@ -84,12 +85,13 @@ sub fetchall {
       $self->dbh()->selectall_arrayref( $query, $opts, @bind_values );
 
     if ( $self->dbh()->errstr() ) {
-        $self->log()->errorf( q{[dbi] %s => %s : %s},
+        $self->log()->errorf( q{[%s:%d] %s => %s : %s},
+            __PACKAGE__, __LINE__,
             $self->db(), $query_name, $self->dbh()->errstr() );
     }
 
     # Issuing rollback due to issue in some internal DBI method
-    # that require commit/rollback after using Slice in fetch
+    # that requires commit/rollback after using Slice in fetch
     $self->dbh()->rollback();
 
     return $result;
@@ -97,6 +99,9 @@ sub fetchall {
 
 sub disconnect {
     my $self = shift;
+
+    $self->log()->infof( q{[%s:%d] disconnecting from '%s'},
+        __PACKAGE__, __LINE__, $self->db() );
 
     return 1 unless $self->dbh();
 

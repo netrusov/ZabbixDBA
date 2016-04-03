@@ -64,7 +64,7 @@ while ($running) {
         $_->join() if !$_->is_running();
     }
 
-    sleep( $c->conf()->{daemon}{sleep} // ZDBA->SLEEP() );
+    sleep( $c->conf()->{daemon}{sleep} // ZDBA->SLEEP_DAEMON() );
 }
 
 sub stop {

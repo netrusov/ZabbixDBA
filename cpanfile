@@ -9,7 +9,6 @@ requires "JSON" => "0";
 requires "List::MoreUtils" => "0";
 requires "Log::Any::Adapter::Log4perl" => "0";
 requires "Log::Log4perl" => "0";
-requires "MIME::Base64" => "0";
 requires "MooX::Log::Any" => "0";
 requires "perl" => "5.010";
 requires "strict" => "0";

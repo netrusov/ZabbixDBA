@@ -142,7 +142,8 @@ sub monitor {
 
         $sender->send(@data);
 
-        sleep( $c->conf()->{$db}->{sleep} // $self->SLEEP() );
+        sleep( $c->conf()->{db}{$db}{sleep} // $c->conf()->{db}{default}{sleep}
+              // $self->SLEEP_THREAD() );
     }
 
     $controller->disconnect();

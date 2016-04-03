@@ -81,6 +81,9 @@ sub ping {
 sub fetchall {
     my ( $self, $query_name, $query, $opts, @bind_values ) = @_;
 
+    $self->log()->debugf( q{[%s:%d] fetching data for '%s' on '%s'},
+        __PACKAGE__, __LINE__, $query_name, $self->db() );
+
     my $result =
       $self->dbh()->selectall_arrayref( $query, $opts, @bind_values );
 

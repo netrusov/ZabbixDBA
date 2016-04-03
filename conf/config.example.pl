@@ -5,15 +5,15 @@
         timeout => 30,
     },
     daemon => {
-        sleep       => 120,
-        retry_count => 1,
+        sleep => 120,
     },
     db => {
         default => {
-            user       => 'zabbix',
-            password   => 'zabbix',
-            query_list => 'query.props.pl',
-            sleep      => 30,
+            user        => 'zabbix',
+            password    => 'zabbix',
+            query_list  => 'query.props.pl',
+            sleep       => 30,
+            retry_count => 1,
         },
         list   => [ 'XXXPRD', 'XXXDEV' ],
         XXXPRD => {

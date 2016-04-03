@@ -32,7 +32,7 @@ cpanm --installdeps .
   
 #### Usage
 ```
-/sbin/service ZabbixDBA {start|stop|restart|reload|status}
+/sbin/service zdba {start|stop|restart|reload|status}
 ```
   
 #### Configuration

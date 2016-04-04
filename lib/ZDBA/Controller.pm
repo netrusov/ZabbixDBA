@@ -116,24 +116,3 @@ sub disconnect {
 1;
 
 __END__
-while ( my ( $rule, $v ) = each %{ $ql->conf()->{discovery}->{rule} } ) {
-    my $result = $dispatcher->fetchall( $rule, $v->{query}, { Slice => {} } )
-      or next;
-
-    if ( defined $result ) {
-        $dispatcher->data(
-            Zabbix::Discoverer::rule( $self->db(), $rule, $result, $v->{keys} )
-        );
-    }
-}
-
-while ( my ( $item, $v ) = each %{ $ql->conf()->{discovery}->{item} } ) {
-    my $result = $dispatcher->fetchall( $item, $v->{query}, { Slice => {} } )
-      or next;
-
-    if ( defined $result ) {
-        $dispatcher->data(
-            Zabbix::Discoverer::item( $self->db(), $item, $result, $v->{keys} )
-        );
-    }
-}

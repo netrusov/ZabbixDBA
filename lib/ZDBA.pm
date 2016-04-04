@@ -6,6 +6,7 @@ use warnings FATAL => 'all';
 use File::Basename  ();
 use File::Spec      ();
 use List::MoreUtils ();
+use Time::HiRes     ();
 use Try::Tiny;
 
 use Configurator;
@@ -112,29 +113,72 @@ sub monitor {
         my $start = [Time::HiRes::gettimeofday];
 
         for my $query ( @{ $ql->conf()->{query_list} } ) {
-            next unless $ql->conf()->{$query};
+            next unless $ql->conf()->{$query} && $ql->conf()->{$query}{query};
 
-            my $arrayref = $controller->fetchall(
-                $query, $ql->conf()->{$query}->{query},
-                undef,  @{ $ql->conf()->{$query}->{bind_values} }
-            ) or next;
+            my $qref = $ql->conf()->{$query};
 
-            my $result;
+            my $result = $controller->fetchall( $query, $qref->{query},
+                undef, @{ $qref->{bind_values} } );
 
-            for my $row ( @{$arrayref} ) {
-                $result .= join q{ }, map { $_ // () } @{$row};
+            next unless $result;
+
+            my $data;
+
+            for my $row ( @{$result} ) {
+                $data .= join q{ }, map { $_ // () } @{$row};
             }
 
-            if ( !defined $result || !length $result ) {
-                $result = $ql->conf()->{$query}->{no_data_found} // next;
+            if ( !defined $data || !length $data ) {
+                $data = $qref->{no_data_found} // next;
             }
 
-            if ( $ql->conf()->{$query}->{send_to} ) {
-                push @data, [ $_, $query, $result ]
-                  for @{ $ql->conf()->{$query}->{send_to} };
+            if ( $qref->{send_to} ) {
+                push @data, [ $_, $query, $data ] for @{ $qref->{send_to} };
             }
             else {
-                push @data, [ $db, $query, $result ];
+                push @data, [ $db, $query, $data ];
+            }
+        }
+
+        while ( my ( $query, $qref ) =
+            each %{ $ql->conf()->{discovery}{rule} } )
+        {
+            my $result =
+              $controller->fetchall( $query, $qref->{query}, { Slice => {} },
+                $qref->{bind_values} );
+
+            next unless $result;
+
+            my $data = { data => [] };
+
+            for my $row ( @{$result} ) {
+                push @{ $data->{data} },
+                  { map { sprintf( '{#%s}', $_ ) => $row->{$_} }
+                      @{ $qref->{keys} } };
+            }
+
+            # Why not sender's JSON?
+            push @data, [ $db, $query, $sender->_json()->encode($data) ];
+        }
+
+        while ( my ( $query, $qref ) =
+            each %{ $ql->conf()->{discovery}{rule} } )
+        {
+            my $result =
+              $controller->fetchall( $query, $qref->{query}, { Slice => {} },
+                $qref->{bind_values} );
+
+            next unless $result;
+
+            for my $row ( @{$result} ) {
+                for ( keys %{ $qref->{keys} } ) {
+                    push @data,
+                      [
+                        $db,
+                        sprintf( '%s[%s]', $query, $row->{$_} ),
+                        $row->{ $qref->{keys}{$_} }
+                      ];
+                }
             }
         }
 

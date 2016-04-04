@@ -3,10 +3,10 @@ package ZDBA;
 use strict;
 use warnings FATAL => 'all';
 
-use File::Basename ();
-use File::Spec     ();
-use Try::Tiny;
+use File::Basename  ();
+use File::Spec      ();
 use List::MoreUtils ();
+use Try::Tiny;
 
 use Configurator;
 use Zabbix::Sender;
@@ -39,7 +39,7 @@ sub monitor {
         $c = Configurator->new( file => $self->confile() );
     }
     catch {
-        $self->log()->fatalf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
+        $self->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
         exit 1;
     };
 
@@ -57,7 +57,13 @@ sub monitor {
     }
 
     while ($running) {
-        $c->load();
+        try {
+            $c->load();
+        }
+        catch {
+            $self->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
+            exit 1;
+        };
 
         if ( !$controller->ping() ) {
             $sender->send( [ $db, 'alive', 0 ] );

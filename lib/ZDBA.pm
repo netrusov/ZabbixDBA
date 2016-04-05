@@ -145,7 +145,7 @@ sub monitor {
         {
             my $result =
               $controller->fetchall( $query, $qref->{query}, { Slice => {} },
-                $qref->{bind_values} );
+                @{ $qref->{bind_values} } );
 
             next unless $result;
 
@@ -166,7 +166,7 @@ sub monitor {
         {
             my $result =
               $controller->fetchall( $query, $qref->{query}, { Slice => {} },
-                $qref->{bind_values} );
+                @{ $qref->{bind_values} } );
 
             next unless $result;
 

@@ -143,9 +143,11 @@ sub monitor {
         while ( my ( $query, $qref ) =
             each %{ $ql->conf()->{discovery}{rule} } )
         {
-            my $result =
-              $controller->fetchall( $query, $qref->{query}, { Slice => {} },
-                @{ $qref->{bind_values} } );
+            my $result = $controller->fetchall(
+                $query, $qref->{query},
+                { Slice => {} },
+                @{ $qref->{bind_values} }
+            );
 
             next unless $result;
 
@@ -164,9 +166,11 @@ sub monitor {
         while ( my ( $query, $qref ) =
             each %{ $ql->conf()->{discovery}{item} } )
         {
-            my $result =
-              $controller->fetchall( $query, $qref->{query}, { Slice => {} },
-                @{ $qref->{bind_values} } );
+            my $result = $controller->fetchall(
+                $query, $qref->{query},
+                { Slice => {} },
+                @{ $qref->{bind_values} }
+            );
 
             next unless $result;
 

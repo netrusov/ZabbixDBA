@@ -162,7 +162,7 @@ sub monitor {
         }
 
         while ( my ( $query, $qref ) =
-            each %{ $ql->conf()->{discovery}{rule} } )
+            each %{ $ql->conf()->{discovery}{item} } )
         {
             my $result =
               $controller->fetchall( $query, $qref->{query}, { Slice => {} },

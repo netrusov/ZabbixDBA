@@ -4,7 +4,7 @@ package main;
 use strict;
 use warnings FATAL => 'all';
 
-use forks;
+use forks 'exit' => 'threads_only';
 use sigtrap 'handler', \&stop, 'normal-signals';
 
 use Carp    ();
@@ -33,6 +33,7 @@ my $pool      = {};
 my $counter   = {};
 
 my $c = Configurator->new( file => $confile );
+my $zdba = ZDBA->new( confile => $confile );
 
 while ($running) {
     $c->load();
@@ -55,16 +56,14 @@ while ($running) {
             }
         }
 
-        $pool->{$db} =
-          threads->create(
-            sub { ZDBA->new( confile => $confile )->monitor($db) } );
+        $pool->{$db} = threads->create( sub { $zdba->monitor($db) } );
     }
 
     for ( threads->list(threads::all) ) {
-        $_->join() if !$_->is_running();
+        $_->kill('INT')->join() if !$_->is_running();
     }
 
-    sleep( $c->conf()->{daemon}{sleep} // ZDBA->SLEEP_DAEMON() );
+    sleep( $c->conf()->{daemon}{sleep} // $zdba->SLEEP_DAEMON() );
 }
 
 sub stop {
@@ -92,7 +91,7 @@ sub count {
     }
     else {
         $counter->{$db} = $c->conf()->{db}{$db}{retry_count}
-          // ZDBA->RETRY_COUNT();
+          // $zdba->RETRY_COUNT();
         --$rc;
     }
 

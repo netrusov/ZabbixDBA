@@ -151,16 +151,18 @@ sub monitor {
 
             next unless $result;
 
-            my $data = { data => [] };
+            while ( my @result_piece = splice @{$result}, 0, 5 ) {
+                my $data = { data => [] };
 
-            for my $row ( @{$result} ) {
-                push @{ $data->{data} },
-                  { map { sprintf( '{#%s}', $_ ) => $row->{$_} }
-                      @{ $qref->{keys} } };
+                for my $row (@result_piece) {
+                    push @{ $data->{data} },
+                      { map { sprintf( '{#%s}', $_ ) => $row->{$_} }
+                          @{ $qref->{keys} } };
+                }
+
+                # Why not sender's JSON?
+                push @data, [ $db, $query, $sender->_json()->encode($data) ];
             }
-
-            # Why not sender's JSON?
-            push @data, [ $db, $query, $sender->_json()->encode($data) ];
         }
 
         while ( my ( $query, $qref ) =
@@ -175,14 +177,13 @@ sub monitor {
             next unless $result;
 
             for my $row ( @{$result} ) {
-                for ( keys %{ $qref->{keys} } ) {
-                    push @data,
-                      [
+                push @data, map {
+                    [
                         $db,
                         sprintf( '%s[%s]', $query, $row->{$_} ),
                         $row->{ $qref->{keys}{$_} }
-                      ];
-                }
+                    ]
+                } keys %{ $qref->{keys} };
             }
         }
 

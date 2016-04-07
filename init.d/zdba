@@ -3,50 +3,60 @@
 # chkconfig: 35 90 12
 # description: ZabbixDBA monitoring service
 
-source /etc/init.d/functions
-source /opt/ZabbixDBA/settings.sh
+ZDBA_ROOT=/opt/zdba
+ZDBA_RUN_AS=zdba
+ZDBA_PERL_BIN='/usr/bin/env perl'
+ZDBA_CONFIG="${ZDBA_ROOT}/conf/config.pl"
+ZDBA_LOCKFILE=/var/lock/subsys/zdba
+ZDBA_PIDFILE=/var/run/zdba.pid
 
-if [[ ! ${RUN_AS} ]]; then
-    RUN_AS=root
+if [[ ! ${ZDBA_RUN_AS} ]]; then
+    ZDBA_RUN_AS=root
 fi
 
+success() {
+    echo -e $"\\033[1;32m $*"
+}
+
+failure() {
+    echo -e $"\\033[1;31m $*"
+}
+
 start() {
-    if [[ -e "$LOCKFILE" ]]; then
-        echo 'Service is already running with pid' $(cat "$PIDFILE")
+    if [[ -e "${ZDBA_LOCKFILE}" ]]; then
+        echo 'Service is already running with pid' $(cat "${ZDBA_PIDFILE}")
     else
         echo -n 'Starting ZabbixDBA service: '
-        su - "${RUN_AS}" -c "$PERL_BIN /opt/ZabbixDBA/ZabbixDBA.pl '$CONFIG'" &
+        pid=$(su - "${ZDBA_RUN_AS}" -c "${ZDBA_PERL_BIN} '${ZDBA_ROOT}/ZabbixDBA.pl' '${ZDBA_CONFIG}' &> /dev/null & echo \${!}")
         sleep 1
-        if ! ps -p $! > /dev/null; then
+        if ! ps -p ${pid} &> /dev/null; then
             failure $"ZabbixDBA failed to start"
             exit 1
         fi
-        echo $! > "$PIDFILE"
-        touch "$LOCKFILE"
+        echo ${pid} > "${ZDBA_PIDFILE}"
+        touch "${ZDBA_LOCKFILE}"
         success $"ZabbixDBA started"
-        echo
     fi
 }
 
 stop() {
-    if [[ -e "$LOCKFILE" ]]; then
+    if [[ -e "${ZDBA_LOCKFILE}" ]]; then
         echo -n 'Stopping ZabbixDBA service: '
-        xargs kill -s INT < "$PIDFILE"
+        xargs kill -s INT < "${ZDBA_PIDFILE}"
         if [[ $? != 0 ]]; then
             failure $"ZabbixDBA failed to stop"
         else
             success $"ZabbixDBA stopped"
         fi
-        rm -f "$LOCKFILE" "$PIDFILE"
-        echo
+        rm -f "${ZDBA_LOCKFILE}" "${ZDBA_PIDFILE}"
     else
         echo 'Service is not running'
     fi  
 }
 
 status() {
-    if [[ -e "$LOCKFILE" ]]; then
-        echo 'Service is running with pid' $(cat "$PIDFILE")
+    if [[ -e "${ZDBA_LOCKFILE}" ]]; then
+        echo 'Service is running with pid' $(cat "${ZDBA_PIDFILE}")
     else
         echo 'Service is not running'
     fi

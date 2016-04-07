@@ -39,21 +39,21 @@ sub load {
 }
 
 sub merge {
-    my ( $self, $source ) = @_;
+    my ( $self, $target, $source ) = @_;
 
     return if !$source;
 
     for ( keys %{$source} ) {
-        if ( $self->{$_} ) {
+        if ( $target->{$_} ) {
             if ( ref $source->{$_} eq 'HASH' ) {
-                merge( $self->{$_}, $source->{$_} );
+                merge( $target->{$_}, $source->{$_} );
             }
             if ( ref $source->{$_} eq 'ARRAY' ) {
-                push @{ $self->{$_} }, @{ $source->{$_} };
+                push @{ $target->{$_} }, @{ $source->{$_} };
             }
         }
         else {
-            $self->{$_} = $source->{$_};
+            $target->{$_} = $source->{$_};
         }
     }
 

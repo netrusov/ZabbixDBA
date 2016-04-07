@@ -92,6 +92,7 @@ sub monitor {
         if ( $c->conf()->{db}{$db}{extra_query_list} ) {
             try {
                 $ql->merge(
+                    $ql->conf(),
                     Configurator->new(
                         file => File::Spec->rel2abs(
                             $c->conf()->{db}{$db}{extra_query_list},

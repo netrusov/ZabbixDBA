@@ -501,18 +501,18 @@ start with parent_id is null
         rule => {
             tablespaces => {
                 query => q{
-                    select name tsname from gv$tablespace
+                    select name ts from gv$tablespace
                 },
-                keys => ['TSNAME'],
+                keys => ['TS'],
             },
         },
         item => {
-            tablespace_usage => {
+            ts_usage => {
                 query => q{
-                    select tablespace_name tsname, used_percent pct
+                    select tablespace_name ts, round(used_percent, 5) pct
                     from dba_tablespace_usage_metrics
                 },
-                keys => { 'TSNAME' => 'PCT' }
+                keys => { 'TS' => 'PCT' }
             },
         },
     },

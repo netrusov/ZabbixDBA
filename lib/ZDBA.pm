@@ -121,7 +121,7 @@ sub monitor {
             my $result = $controller->fetchall( $query, $qref->{query},
                 undef, @{ $qref->{bind_values} } );
 
-            next unless $result;
+            next unless @{$result};
 
             my $data;
 
@@ -150,7 +150,7 @@ sub monitor {
                 @{ $qref->{bind_values} }
             );
 
-            next unless $result;
+            next unless @{$result};
 
             while ( my @result_piece = splice @{$result}, 0, 5 ) {
                 my $data = { data => [] };
@@ -175,7 +175,7 @@ sub monitor {
                 @{ $qref->{bind_values} }
             );
 
-            next unless $result;
+            next unless @{$result};
 
             for my $row ( @{$result} ) {
                 push @data, map {

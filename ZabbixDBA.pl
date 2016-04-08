@@ -10,6 +10,7 @@ use sigtrap 'handler', \&stop, 'normal-signals';
 use Carp    ();
 use FindBin ();
 use lib "$FindBin::Bin/lib";
+use Try::Tiny;
 
 use Log::Log4perl qw(:easy);
 use Log::Any::Adapter;
@@ -32,14 +33,29 @@ my $running   = 1;
 my $pool      = {};
 my $counter   = {};
 
-my $c = Configurator->new( file => $confile );
 my $zdba = ZDBA->new( confile => $confile );
+
+$zdba->log()->infof( q{[%s:%d] starting %s},
+    __PACKAGE__, __LINE__, $zdba->PROJECT_NAME() );
+
+my $c;
+
+try {
+    $c = Configurator->new( file => $confile );
+}
+catch {
+    $zdba->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
+    exit 1;
+};
 
 while ($running) {
     $c->load();
 
     for my $db ( keys %{$pool} ) {
         if ( !List::MoreUtils::any { m/$db/ms } @{ $c->conf()->{db}{list} } ) {
+            $zdba->log()->infof( q{[%s:%d] %s has gone from configuration},
+                __PACKAGE__, __LINE__, $db );
+
             $pool->{$db}->kill('INT')->join();
             delete $pool->{$db};
             delete $counter->{$db};
@@ -56,6 +72,9 @@ while ($running) {
             }
         }
 
+        $zdba->log()->infof( q{[%s:%d] starting thread for %s},
+            __PACKAGE__, __LINE__, $db );
+
         $pool->{$db} = threads->create( sub { $zdba->monitor($db) } );
     }
 
@@ -67,6 +86,9 @@ while ($running) {
 }
 
 sub stop {
+    $zdba->log()->infof( q{[%s:%d] stopping %s},
+        __PACKAGE__, __LINE__, $zdba->PROJECT_NAME() );
+
     $running = 0;
 
     while ( threads->list(threads::all) ) {

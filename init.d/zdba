@@ -15,11 +15,11 @@ if [[ ! ${ZDBA_RUN_AS} ]]; then
 fi
 
 success() {
-    echo -e $"\\033[1;32m $*"
+    echo -e $"\\033[1;32m $* \033[0m"
 }
 
 failure() {
-    echo -e $"\\033[1;31m $*"
+    echo -e $"\\033[1;31m $* \033[0m"
 }
 
 start() {

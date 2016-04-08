@@ -373,119 +373,111 @@ group by rootid
     },
     blocking_sessions_full => {
         query => q{
-    
-           select    lpad (' ', (level - 1) * 4)
+    select    lpad(' ', (level - 1) * 4)
            || 'INST_ID         :  '
            || inst_id
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'SERVICE_NAME    :  '
            || service_name
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'SID,SERIAL      :  '
            || sid
            || ','
            || serial#
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'USERNAME        :  '
            || username
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'OSUSER          :  '
            || osuser
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'MACHINE         :  '
            || machine
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'PROGRAM         :  '
            || program
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
+           || 'MODULE          :  '
+           || module
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'SQL_ID          :  '
            || sql_id
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'EVENT           :  '
            || event
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'SECONDS_IN_WAIT :  '
            || seconds_in_wait
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'STATE           :  '
            || state
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || 'STATUS          :  '
            || status
-           || chr (10)
-           || lpad (' ', (level - 1) * 4)
+           || chr(10)
+           || lpad(' ', (level - 1) * 4)
            || '========================='
-           || chr (10)
+           || chr(10)
               blocking_sess_info
-      from (select t1.id
-                 , t1.parent_id
-                 , t1.inst_id
-                 , t1.service_name
-                 , t1.sid
-                 , t1.serial#
-                 , t1.username
-                 , t1.osuser
-                 , t1.machine
-                 , t1.program
-                 , t1.sql_id
-                 , t1.event
-                 , t1.seconds_in_wait
-                 , t1.state
-                 , t1.status
-              from (    select inst_id || '.' || sid id
-                             , case
-                                  when blocking_instance is not null then
-                                     blocking_instance || '.' || blocking_session
-                               end
-                                  parent_id
-                             , inst_id
-                             , service_name
-                             , sid
-                             , serial#
-                             , username
-                             , osuser
-                             , machine
-                             , program
-                             , sql_id
-                             , event
-                             , seconds_in_wait
-                             , state
-                             , status
-                             , level lvl
-                             , connect_by_isleaf isleaf
-                             , connect_by_root (inst_id || '.' || sid) rootid
-                          from gv$session
-                    start with blocking_session is null
-                    connect by nocycle     prior inst_id = blocking_instance
-                                       and prior sid = blocking_session) t1
-             where     lvl || isleaf <> '11'
-                   and rootid in (  select rootid
-                                      from (    select level lvl
-                                                     , connect_by_root (   inst_id
-                                                                        || '.'
-                                                                        || sid)
-                                                          rootid
-                                                     , seconds_in_wait
-                                                  from gv$session
-                                            start with blocking_session is null
-                                            connect by nocycle     prior inst_id =
-                                                                      blocking_instance
-                                                               and prior sid =
-                                                                      blocking_session)
-                                     where lvl > 1
-                                  group by rootid
-                                    having sum (seconds_in_wait) > 300))
+      from (
+                  select inst_id || '.' || sid id
+                       , case
+                            when blocking_instance is not null
+                            then
+                               blocking_instance || '.' || blocking_session
+                         end
+                            parent_id
+                       , inst_id
+                       , service_name
+                       , sid
+                       , serial#
+                       , username
+                       , osuser
+                       , machine
+                       , program
+                       , module
+                       , sql_id
+                       , event
+                       , seconds_in_wait
+                       , state
+                       , status
+                       , level lvl
+                       , connect_by_isleaf isleaf
+                       , connect_by_root (inst_id || '.' || sid) rootid
+                    from gv$session
+              start with blocking_session is null
+              connect by nocycle prior inst_id = blocking_instance
+                             and prior sid = blocking_session
+           )
+     where lvl || isleaf <> '11'
+       and rootid in
+              (
+                   select rootid
+                     from (
+                                 select level lvl
+                                      , connect_by_root (inst_id || '.' || sid) rootid
+                                      , seconds_in_wait
+                                   from gv$session
+                             start with blocking_session is null
+                             connect by nocycle prior inst_id = blocking_instance
+                                            and prior sid = blocking_session
+                          )
+                    where lvl > 1
+                 group by rootid
+                   having sum(seconds_in_wait) > 300
+              )
 connect by nocycle prior id = parent_id
 start with parent_id is null
         },

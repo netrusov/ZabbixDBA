@@ -28,7 +28,7 @@
     ],
     archivelog_switch => {
         query => q{
-            select nvl(max(count(*)), 0)
+            select count(*)
             from gv$log_history
             where first_time >= (sysdate - 1 / 24)
         },

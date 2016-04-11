@@ -28,7 +28,7 @@
     ],
     archivelog_switch => {
         query => q{
-            select nvl (count(*), 0)
+            select nvl(max(count(*)), 0)
             from gv$log_history
             where first_time >= (sysdate - 1 / 24)
         },
@@ -357,7 +357,7 @@
     },
     blocking_sessions => {
         query => q{
-              select count (*)
+              select nvl(max(count(*)), 0)
     from (    select level lvl
                    , connect_by_root (inst_id || '.' || sid) rootid
                    , seconds_in_wait

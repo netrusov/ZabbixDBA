@@ -97,7 +97,7 @@ sub fetchall {
     # that requires commit/rollback after using Slice in fetch
     $self->dbh()->rollback();
 
-    return $result;
+    return $result // [];
 }
 
 sub disconnect {

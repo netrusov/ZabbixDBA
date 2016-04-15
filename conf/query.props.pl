@@ -21,10 +21,10 @@
         'sga_java_pool',          'sga_large_pool',
         'sga_log_buffer',         'waits_directpath_read',
         'waits_file_io',          'waits_controlfileio',
-        'waits_logwrite',         'waits_multiblock_read',
-        'waits_singleblock_read', 'waits_sqlnet',
-        'blocking_sessions',      'blocking_sessions_full',
-        'dbversion'
+        'waits_logwrite',         'waits_logsync',
+        'waits_multiblock_read',  'waits_singleblock_read',
+        'waits_sqlnet',           'blocking_sessions',
+        'blocking_sessions_full', 'dbversion'
     ],
     archivelog_switch => {
         query => q{
@@ -113,14 +113,14 @@
     },
     pga_aggregate_target => {
         query => q{
-            select value / 1024 / 1024
+            select value
             from gv$pgastat
             where name = 'aggregate PGA target parameter'
         },
     },
     pga => {
         query => q{
-            select value / 1024 / 1024
+            select value
             from gv$pgastat
             where name = 'total PGA inuse'
         },
@@ -176,7 +176,7 @@
     },
     pool_dict_cache => {
         query => q{
-            select bytes / 1024 / 1024
+            select bytes
             from gv$sgastat
             where pool = 'shared pool' and name = 'dictionary cache'
         },
@@ -184,14 +184,14 @@
     },
     pool_free_mem => {
         query => q{
-            select bytes / 1024 / 1024
+            select bytes
             from gv$sgastat
             where pool = 'shared pool' and name = 'free memory'
         },
     },
     pool_lib_cache => {
         query => q{
-            select bytes / 1024 / 1024
+            select bytes
             from gv$sgastat
             where pool = 'shared pool' and name = 'library cache'
         },
@@ -199,7 +199,7 @@
     },
     pool_sql_area => {
         query => q{
-            select bytes / 1024 / 1024
+            select bytes
             from gv$sgastat
             where pool = 'shared pool' and name = 'sql area'
         },
@@ -207,7 +207,7 @@
     },
     pool_misc => {
         query => q{
-            select sum (bytes / 1024 / 1024)
+            select sum (bytes)
             from gv$sgastat
             where pool = 'shared pool'
             and name not in ('library cache'
@@ -259,42 +259,42 @@
     },
     sga_buffer_cache => {
         query => q{
-            select sum (bytes) / 1024 / 1024
+            select sum (bytes)
             from gv$sgastat
             where name in ('db_block_buffers', 'buffer_cache')
         },
     },
     sga_fixed => {
         query => q{
-            select sum (bytes) / 1024 / 1024
+            select sum (bytes)
             from gv$sgastat
             where name = 'fixed_sga'
         },
     },
     sga_java_pool => {
         query => q{
-            select sum (bytes) / 1024 / 1024
+            select sum (bytes)
             from gv$sgastat
             where pool = 'java pool'
         },
     },
     sga_large_pool => {
         query => q{
-            select sum (bytes) / 1024 / 1024
+            select sum (bytes)
             from gv$sgastat
             where pool = 'large pool'
         },
     },
     sga_shared_pool => {
         query => q{
-            select sum (bytes) / 1024 / 1024
+            select sum (bytes)
             from gv$sgastat
             where pool = 'shared pool'
         },
     },
     sga_log_buffer => {
         query => q{
-            select sum (bytes) / 1024 / 1024
+            select sum (bytes)
             from gv$sgastat
             where name = 'log_buffer'
         },
@@ -327,6 +327,13 @@
             select sum (total_waits)
             from gv$system_event
             where event in ('log file single write', 'log file parallel write')
+        },
+    },
+    waits_logsync => {
+        query => q{
+            select sum(total_waits)
+            from gv$system_event
+            where event = 'log file sync'
         },
     },
     waits_multiblock_read => {
@@ -497,6 +504,13 @@ start with parent_id is null
                 },
                 keys => ['TS'],
             },
+            wait_classes => {
+                query => q{
+                    select distinct wait_class as class
+                    from gv$system_event
+                },
+                keys => ['CLASS'],
+            },
         },
         item => {
             ts_usage => {
@@ -505,6 +519,15 @@ start with parent_id is null
                     from dba_tablespace_usage_metrics
                 },
                 keys => { 'TS' => 'PCT' }
+            },
+            waits_ms => {
+                query => q{
+                  select ta.wait_class as class, sum(ta.total_waits) as waits_ms
+                  from gv$system_event ta
+                  where event not in ('SQL*Net message from client', 'pipe get')
+                  group by ta.wait_class
+                },
+                keys => { CLASS => 'WAITS_MS' },
             },
         },
     },

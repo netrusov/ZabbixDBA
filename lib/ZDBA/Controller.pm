@@ -103,14 +103,18 @@ sub fetchall {
 sub disconnect {
     my $self = shift;
 
+    return 1 unless $self->dbh();
+
     $self->log()->infof( q{[%s:%d] disconnecting from '%s'},
         __PACKAGE__, __LINE__, $self->db() );
-
-    return 1 unless $self->dbh();
 
     $self->dbh()->disconnect();
 
     return 1;
+}
+
+sub DEMOLISH {
+    shift->disconnect();
 }
 
 1;

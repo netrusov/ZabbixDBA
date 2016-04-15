@@ -10,9 +10,9 @@ use Time::HiRes     ();
 use Try::Tiny;
 
 use Configurator;
-use Zabbix::Sender;
 
 use ZDBA::Controller;
+use ZDBA::Sender;
 
 use Moo;
 
@@ -44,7 +44,7 @@ sub monitor {
         exit 1;
     };
 
-    my $sender = Zabbix::Sender->new( $c->conf()->{zabbix} );
+    my $sender = ZDBA::Sender->new( $c->conf()->{zabbix} );
 
     my $controller = ZDBA::Controller->new(
         db      => $db,

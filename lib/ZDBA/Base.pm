@@ -1,6 +1,4 @@
 package ZDBA::Base;
-use strict;
-use warnings FATAL => 'all';
 
 use Moo::Role;
 

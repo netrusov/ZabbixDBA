@@ -2,6 +2,7 @@
 .includepath
 .project
 tmp/
-log/*.log
+log/*
+!log/.keep
 *.bak
 *.tdy

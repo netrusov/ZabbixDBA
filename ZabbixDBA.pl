@@ -10,7 +10,6 @@ use sigtrap 'handler', \&stop, 'normal-signals';
 use Carp    ();
 use FindBin ();
 use lib "$FindBin::Bin/lib";
-use Try::Tiny;
 
 use Log::Log4perl qw(:easy);
 use Log::Any::Adapter;
@@ -23,6 +22,7 @@ BEGIN {
 }
 
 use ZDBA;
+use ZDBA::Configurator;
 
 if ( !@ARGV ) {
     Carp::confess 'Usage: perl ZabbixDBA.pl /path/to/config.pl &';
@@ -38,18 +38,10 @@ my $zdba = ZDBA->new( confile => $confile );
 $zdba->log()->infof( q{[%s:%d] starting %s},
     __PACKAGE__, __LINE__, $zdba->PROJECT_NAME() );
 
-my $c;
-
-try {
-    $c = Configurator->new( file => $confile );
-}
-catch {
-    $zdba->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
-    exit 1;
-};
+my $c = ZDBA::Configurator->new( file => $confile ) or exit 1;
 
 while ($running) {
-    $c->load();
+    exit 1 unless $c->load();
 
     for my $db ( keys %{$pool} ) {
         if ( !List::MoreUtils::any { m/$db/ms } @{ $c->conf()->{db}{list} } ) {

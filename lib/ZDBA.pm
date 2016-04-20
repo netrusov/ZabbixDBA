@@ -7,12 +7,10 @@ use File::Basename  ();
 use File::Spec      ();
 use List::MoreUtils ();
 use Time::HiRes     ();
-use Try::Tiny;
 
-use Configurator;
-use Zabbix::Sender;
-
+use ZDBA::Configurator;
 use ZDBA::Controller;
+use ZDBA::Sender;
 
 use Moo;
 
@@ -34,17 +32,11 @@ sub monitor {
 
     local $SIG{INT} = sub { $running = 0 };
 
-    my $c;
+    my $c = ZDBA::Configurator->new( file => $self->confile() );
 
-    try {
-        $c = Configurator->new( file => $self->confile() );
-    }
-    catch {
-        $self->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
-        exit 1;
-    };
+    return unless $c;
 
-    my $sender = Zabbix::Sender->new( $c->conf()->{zabbix} );
+    my $sender = ZDBA::Sender->new( $c->conf()->{zabbix} );
 
     my $controller = ZDBA::Controller->new(
         db      => $db,
@@ -54,56 +46,39 @@ sub monitor {
 
     if ( !$controller->connect() ) {
         $sender->send( [ $db, 'alive', 0 ] );
-        exit 1;
+        return;
     }
 
     while ($running) {
-        try {
-            $c->load();
-        }
-        catch {
-            $self->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
-            exit 1;
-        };
+        return unless $c->load();
 
         if ( !$controller->ping() ) {
             $sender->send( [ $db, 'alive', 0 ] );
-            exit 1;
+            return;
         }
 
         $sender->send( [ $db, 'alive', 1 ] );
 
-        my $ql;
+        my $ql = ZDBA::Configurator->new(
+            file => File::Spec->rel2abs(
+                $c->conf()->{db}{$db}{query_list}
+                  // $c->conf()->{db}{default}{query_list},
+                File::Basename::dirname( $c->file() )
+            )
+        );
 
-        try {
-            $ql = Configurator->new(
-                file => File::Spec->rel2abs(
-                    $c->conf()->{db}{$db}{query_list}
-                      // $c->conf()->{db}{default}{query_list},
-                    File::Basename::dirname( $c->file() )
-                )
-            );
-        }
-        catch {
-            $self->log()->errorf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
-            exit 1;
-        };
+        return unless $ql;
 
         if ( $c->conf()->{db}{$db}{extra_query_list} ) {
-            try {
-                $ql->merge(
-                    $ql->conf(),
-                    Configurator->new(
-                        file => File::Spec->rel2abs(
-                            $c->conf()->{db}{$db}{extra_query_list},
-                            File::Basename::dirname( $c->file() )
-                        )
-                    )->conf()
-                );
-            }
-            catch {
-                $self->log()->warnf( q{[%s:%d] %s}, __PACKAGE__, __LINE__, $_ );
-            };
+            $ql->merge(
+                $ql->conf(),
+                ZDBA::Configurator->new(
+                    file => File::Spec->rel2abs(
+                        $c->conf()->{db}{$db}{extra_query_list},
+                        File::Basename::dirname( $c->file() )
+                    )
+                )->conf()
+            );
         }
 
         my @data;

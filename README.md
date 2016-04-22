@@ -15,10 +15,10 @@ Feel free to fork and contribute!
   
 #### Installation
 Copy project source to desired directory.
-If path will differ from default (/opt/ZabbixDBA) be sure to change it in startup script!
-Open **settings.sh** file and carefully check all paths.
-  
-Put the script **[init.d/zdba](init.d/zdba)** to your **/etc/init.d** directory
+If path will differ from default (/opt/zdba) be sure to change it in startup script.
+
+- Open **[init.d/zdba](init.d/zdba)** file and carefully check all paths.
+- Put this scrip to **/etc/init.d** directory and enable ZabbixDBA to run automatically when system starts up
 ```
 cp init.d/zdba /etc/init.d
 chmod +x /etc/init.d/zdba

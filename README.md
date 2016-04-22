@@ -1,5 +1,7 @@
 ## ZabbixDBA
-ZabbixDBA uses threading of DBI connections which is good for monitoring of multiple database instances.
+ZabbixDBA is fast, flexible, and continuously developing plugin to monitor your RDBMS.
+  
+ZabbixDBA uses threading of DBI connections which is good for monitoring of multiple database instances simultaneously. Just configure it, run daemon and it will do all the job.
 Currently there are template and query set only for Oracle database, but Perl DBI supports any type of RDBMS:
 - Oracle
 - MySQL

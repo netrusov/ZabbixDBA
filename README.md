@@ -47,3 +47,13 @@ cpanm --installdeps .
 - [Discovery Rules](docs/DiscoveryRules.md)
 - [Bind Values](https://metacpan.org/pod/DBI#Placeholders-and-Bind-Values)
 - [Log4perl](https://metacpan.org/pod/Log::Log4perl)
+  
+
+
+```
+COPYRIGHT AND LICENSE
+    Copyright 2014-2016 by Alexander Netrusov <alexander.netrusov@gmail.com>
+ 
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+```

@@ -364,17 +364,22 @@
     },
     blocking_sessions => {
         query => q{
-              select nvl(max(count(*)), 0)
-    from (    select level lvl
-                   , connect_by_root (inst_id || '.' || sid) rootid
-                   , seconds_in_wait
-                from gv$session
-          start with blocking_session is null
-          connect by nocycle     prior inst_id = blocking_instance
-                             and prior sid = blocking_session)
-   where lvl > 1
-group by rootid
-  having sum (seconds_in_wait) > 300
+select count(*)
+  from (
+            select rootid
+              from (
+                          select level lvl
+                               , connect_by_root (inst_id || '.' || sid) rootid
+                               , seconds_in_wait
+                            from gv$session
+                      start with blocking_session is null
+                      connect by nocycle prior inst_id = blocking_instance
+                                     and prior sid = blocking_session
+                   )
+             where lvl > 1
+          group by rootid
+            having sum(seconds_in_wait) > 300
+       )
         },
         no_data_found => 0,
     },

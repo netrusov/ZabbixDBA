@@ -518,12 +518,20 @@ start with parent_id is null
             },
         },
         item => {
-            ts_usage => {
+            ts_usage_pct => {
                 query => q{
                     select tablespace_name ts, round(used_percent, 5) pct
                     from dba_tablespace_usage_metrics
                 },
-                keys => { 'TS' => 'PCT' }
+                keys => { TS => 'PCT' }
+            },
+            ts_usage_bytes => {
+                query => q{
+                    select ta.tablespace_name as ts, ta.used_space * tb.block_size as bytes
+                    from dba_tablespace_usage_metrics ta
+                    join dba_tablespaces tb on ta.tablespace_name = tb.tablespace_name
+                },
+                keys => { TS => 'BYTES' }
             },
             waits_ms => {
                 query => q{

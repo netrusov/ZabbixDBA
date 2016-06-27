@@ -39,7 +39,7 @@ has _json => (
 
 has _zabbix_template => (
     is      => 'ro',
-    default => 'a4 b C4 C4 a*'
+    default => 'a4 b V V a*'
 );
 
 no Moo;
@@ -89,13 +89,7 @@ sub _pack {
         $self->_zabbix_template(),         #
         'ZBXD',                            #
         0x01,                              #
-        ( $length & 0xFF ),                #
-        ( $length & 0x00FF ) >> 8,         #
-        ( $length & 0x0000FF ) >> 16,      #
-        ( $length & 0x000000FF ) >> 24,    #
-        0x00,                              #
-        0x00,                              #
-        0x00,                              #
+        $length,                           #
         0x00,                              #
         $data
     );

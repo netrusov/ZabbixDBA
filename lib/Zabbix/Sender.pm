@@ -25,6 +25,11 @@ has timeout => (
     default => 30
 );
 
+has _max_items => (
+    is      => 'ro',
+    default => 1
+);
+
 has _socket => ( is => 'rw' );
 
 has _json => (
@@ -119,7 +124,7 @@ sub _send {
 sub send {
     my ( $self, @data ) = @_;
 
-    while ( my @data_piece = splice @data, 0, 10 ) {
+    while ( my @data_piece = splice @data, 0, $self->_max_items() ) {
         my $request = {
             'request' => 'sender data',
             'data'    => [],

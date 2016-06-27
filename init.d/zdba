@@ -27,7 +27,7 @@ start() {
         echo 'Service is already running with pid' $(cat "${ZDBA_PIDFILE}")
     else
         echo -n 'Starting ZabbixDBA service: '
-        pid=$(su - "${ZDBA_RUN_AS}" -c "${ZDBA_PERL_BIN} '${ZDBA_ROOT}/ZabbixDBA.pl' '${ZDBA_CONFIG}' &> /dev/null & echo \${!}")
+        pid=$(su - "${ZDBA_RUN_AS}" -c "${ZDBA_PERL_BIN} '${ZDBA_ROOT}/ZabbixDBA.pl' '${ZDBA_CONFIG}' &> '${ZDBA_ROOT}/log/zdba.err' & echo \${!}")
         sleep 1
         if ! ps -p ${pid} &> /dev/null; then
             failure $"ZabbixDBA failed to start"

@@ -2252,12 +2252,12 @@
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Tablespace usage {#TSNAME}</name>
+                            <name>Tablespace usage {#TS}</name>
                             <type>2</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>tablespace_usage[{#TSNAME}]</key>
+                            <key>ts_usage[{#TS}]</key>
                             <delay>0</delay>
                             <history>90</history>
                             <trends>365</trends>
@@ -2297,8 +2297,8 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template Oracle:tablespace_usage[{#TSNAME}].last(0)}&gt;95</expression>
-                            <name>Tablespace {#TSNAME} free space is less than 5%</name>
+                            <expression>{Template Oracle:ts_usage[{#TS}].last(0)}&gt;95</expression>
+                            <name>Tablespace {#TS} free space is less than 5%</name>
                             <url/>
                             <status>0</status>
                             <priority>4</priority>
@@ -2306,8 +2306,8 @@
                             <type>0</type>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template Oracle:tablespace_usage[{#TSNAME}].last(0)}&gt;90</expression>
-                            <name>Tablespace {#TSNAME} free space is less than 10%</name>
+                            <expression>{Template Oracle:ts_usage[{#TS}].last(0)}&gt;90</expression>
+                            <name>Tablespace {#TS} free space is less than 10%</name>
                             <url/>
                             <status>0</status>
                             <priority>2</priority>

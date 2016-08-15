@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# chkconfig: 35 90 12
+# description: ZabbixDBA monitoring service
+
+ZDBA_ROOT=/opt/zdba
+ZDBA_RUN_AS=root
+ZDBA_PERL_BIN='/usr/bin/env perl'
+ZDBA_CONFIG="${ZDBA_ROOT}/conf/config.pl"
+ZDBA_LOCKFILE="${ZDBA_ROOT}/tmp/zdba.lock"
+ZDBA_PIDFILE="${ZDBA_ROOT}/tmp/zdba.pid"
+
+if [[ ! ${ZDBA_RUN_AS} ]]; then
+    ZDBA_RUN_AS=root
+fi
+
+success() {
+    echo -e $"\\033[1;32m $* \033[0m"
+}
+
+failure() {
+    echo -e $"\\033[1;31m $* \033[0m"
+}
+
+start() {
+    if [[ -e "${ZDBA_LOCKFILE}" ]]; then
+        echo 'Service is already running with pid' $(cat "${ZDBA_PIDFILE}")
+    else
+        echo -n 'Starting ZabbixDBA service: '
+        pid=$(su - "${ZDBA_RUN_AS}" -c "${ZDBA_PERL_BIN} '${ZDBA_ROOT}/ZabbixDBA.pl' '${ZDBA_CONFIG}' &> '${ZDBA_ROOT}/log/zdba.err' & echo \${!}")
+        sleep 1
+        if ! ps -p ${pid} &> /dev/null; then
+            failure $"ZabbixDBA failed to start"
+            exit 1
+        fi
+        echo ${pid} > "${ZDBA_PIDFILE}"
+        touch "${ZDBA_LOCKFILE}"
+        success $"ZabbixDBA started"
+    fi
+}
+
+stop() {
+    if [[ -e "${ZDBA_LOCKFILE}" ]]; then
+        echo -n 'Stopping ZabbixDBA service: '
+        xargs kill -s INT < "${ZDBA_PIDFILE}"
+        if [[ $? != 0 ]]; then
+            failure $"ZabbixDBA failed to stop"
+        else
+            success $"ZabbixDBA stopped"
+        fi
+        rm -f "${ZDBA_LOCKFILE}" "${ZDBA_PIDFILE}"
+    else
+        echo 'Service is not running'
+    fi
+}
+
+status() {
+    if [[ -e "${ZDBA_LOCKFILE}" ]]; then
+        echo 'Service is running with pid' $(cat "${ZDBA_PIDFILE}")
+    else
+        echo 'Service is not running'
+    fi
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart|reload)
+        stop
+        sleep 3
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

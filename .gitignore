@@ -1,0 +1,12 @@
+/.idea
+/.includepath
+/.project
+
+/log/*
+/tmp/*
+
+!/log/.keep
+!/tmp/.keep
+
+*.bak
+*.tdy

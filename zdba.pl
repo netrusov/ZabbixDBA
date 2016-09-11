@@ -24,7 +24,7 @@ BEGIN {
 
 my $zdba = ZDBA->new( config => { file => shift @ARGV } );
 
-$zdba->log->info( q{starting %s}, $zdba->PROJECT_NAME );
+$zdba->log->info( q{starting %s (version %s)}, $zdba->PROJECT_NAME, $zdba->VERSION );
 
 while ($running) {
   $zdba->config->load;

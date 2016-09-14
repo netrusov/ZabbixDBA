@@ -23,11 +23,12 @@ has log => (
   default => sub { ZDBA::Logger->new }
 );
 
-has dump => (
-  is      => 'ro',
-  lazy    => 1,
-  default => sub { \&Dumper }
-);
+# *** Public methods
+
+sub dump {
+  my (undef) = shift;
+  return Dumper(@_);
+}
 
 1;
 

@@ -10,3 +10,5 @@
 
 *.bak
 *.tdy
+
+/conf/config.pl

@@ -53,7 +53,7 @@ sub monitor {
 
     $self->sender->send( { host => $db, key => 'alive', value => $self->dbi->dbh->ping } );
 
-    $self->log->debug( sub { qq{configuration for '%s' has been loaded:\n%s}, $db, $self->dump->( $self->dbconf ) } );
+    $self->log->debug( sub { qq{configuration for '%s' has been loaded:\n%s}, $db, $self->dump( $self->dbconf ) } );
 
     # load query file
     my $query_file = $self->{dbconf}{query_list};
@@ -141,7 +141,7 @@ sub monitor {
     $timings->{main}{elapsed} = tv_interval( @{ $timings->{main} }{qw|start end|} );
 
     $self->log->info( q{completed fetching data on '%s' (elapsed %s)}, $db, $timings->{main}{elapsed} );
-    $self->log->debug( sub { qq{timings for '%s':\n%s}, $db, $self->dump->($timings) } );
+    $self->log->debug( sub { qq{timings for '%s':\n%s}, $db, $self->dump($timings) } );
 
     # send fetched data to zabbix
     $self->sender->send(@data);

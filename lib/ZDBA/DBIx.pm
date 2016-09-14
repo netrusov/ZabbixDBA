@@ -74,7 +74,7 @@ sub _fetch {
 
   $self->connect unless $self->dbh;
 
-  $self->log->debug( sub { qq{fetching data from '%s' using '%s' with options:\n%s}, $self->dsn, $method, $self->dump->($args) } );
+  $self->log->debug( sub { qq{fetching data from '%s' using '%s' with options:\n%s}, $self->dsn, $method, $self->dump($args) } );
 
   my $start = [gettimeofday];
 
@@ -95,7 +95,7 @@ sub _fetch {
   if ( $self->dbh->errstr ) {
     $self->log->error( qq{failed to execute query on '%s':\n%s}, $self->dsn, $self->dbh->errstr );
   } else {
-    $self->log->debug( sub { qq{fetched data from '%s' (elapsed %s):\n%s}, $self->dsn, $timing->{elapsed}, $self->dump->($result) } );
+    $self->log->debug( sub { qq{fetched data from '%s' (elapsed %s):\n%s}, $self->dsn, $timing->{elapsed}, $self->dump($result) } );
   }
 
   $self->dbh->rollback;

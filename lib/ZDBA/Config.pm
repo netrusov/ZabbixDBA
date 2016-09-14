@@ -41,7 +41,7 @@ sub compile {
     Carp::confess $self->log->fatal( q{file '%s' did not return a HASH}, $file );
   }
 
-  $self->log->debug( sub { qq{loaded configuration from file '%s':\n%s}, $file, $self->dump->($result) } );
+  $self->log->debug( sub { qq{loaded configuration from file '%s':\n%s}, $file, $self->dump($result) } );
 
   return $result;
 }

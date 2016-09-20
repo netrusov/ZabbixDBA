@@ -16,7 +16,7 @@ sub hash_merge {
   return unless $source;
   return unless ref $target eq 'HASH' && ref $target eq ref $source;
 
-  no warnings 'experimental';
+  no if ($PERL_VERSION >= 5.018), warnings => 'experimental';
   for my $key ( keys %{$source} ) {
     if ( exists $target->{$key} ) {
       next unless ref $target->{$key} eq ref $source->{$key};
@@ -30,7 +30,7 @@ sub hash_merge {
       $target->{$key} = $source->{$key}
     }
   }
-  use warnings 'experimental';
+  use if ($PERL_VERSION >= 5.018), warnings => 'experimental';
 
   return $target;
 }

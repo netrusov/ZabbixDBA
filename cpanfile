@@ -8,6 +8,7 @@ requires "IO::Socket::INET" => "0";
 requires "JSON" => "0";
 requires "Log::Any::Adapter::Log4perl" => "0";
 requires "Log::Log4perl" => "0";
+requires "Moo" => "0";
 requires "perl" => "5.010";
 requires "strict" => "0";
 requires "Time::HiRes" => "0";

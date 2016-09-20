@@ -10,6 +10,7 @@ use File::Spec;
 use Log::Log4perl ':easy';
 use Log::Any::Adapter;
 
+use lib File::Spec->catpath( $Bin, 'lib' );
 use ZDBA;
 
 my $running = 1;

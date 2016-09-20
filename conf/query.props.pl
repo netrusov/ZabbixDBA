@@ -1,5 +1,5 @@
 {
-  query_list => [
+  list => [
     'archivelog_switch',      'uptime',
     'dbblockgets',            'dbconsistentgets',
     'dbphysicalreads',        'dbblockchanges',

@@ -11,6 +11,7 @@ Sample configuration file has the following syntax:
     },
     daemon => {
         sleep => 120,
+        split_logs => 1,
     },
     db => {
         default => {
@@ -52,11 +53,14 @@ zabbix => {
 
 ### daemon
 
-Here you can only specify one and only parameter - sleep. This will tell the main process how much it should sleep before starting next iteration (checks of dead connections, creating new thread, etc.).
+At `daemon` section you specify:
+- `sleep` - this will tell the main process how much it should sleep before starting next iteration (checks of dead connections, creating new thread, etc.);
+- `split_logs` - tell ZDBA to split logs by threads (one per each monitoring thread). See notes at [conf/log4perl.conf](../conf/log4perl.conf)
 
 ```perl
 daemon => {
     sleep => 120,
+    split_logs => 1,
 }
 ```
 

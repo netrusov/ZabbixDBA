@@ -13,15 +13,14 @@ use Log::Any::Adapter;
 use lib File::Spec->catpath( $Bin, 'lib' );
 use ZDBA;
 
+$ENV{ZDBA_SPLIT_LOGS} = 0;
+
+Log::Any::Adapter->set('Log4perl');
+Log::Log4perl::init( File::Spec->catpath( $Bin, 'conf', 'log4perl.conf' ) );
+
 my $running = 1;
 my $counter = {};
 my $pool    = {};
-
-BEGIN {
-  chdir $Bin or die 'failed to change directory';
-  Log::Log4perl::init( File::Spec->catpath( $Bin, 'conf', 'log4perl.conf' ) );
-  Log::Any::Adapter->set('Log4perl');
-}
 
 my $zdba = ZDBA->new( config => { file => shift @ARGV } );
 
@@ -29,6 +28,8 @@ $zdba->log->info( q{starting %s (version %s)}, $zdba->PROJECT_NAME, $zdba->VERSI
 
 while ($running) {
   $zdba->config->load;
+
+  $ENV{ZDBA_SPLIT_LOGS} = $zdba->{config}{daemon}{split_logs};
 
   for my $db ( keys %{$pool} ) {
     unless ( grep { m/$db/ms } @{ $zdba->{config}{db}{list} } ) {
@@ -51,7 +52,11 @@ while ($running) {
 
     $zdba->log->info( q{starting thread for database '%s'}, $db );
 
-    $pool->{$db} = threads->create( sub { $zdba->monitor($db) } );
+    $pool->{$db} = threads->create( sub {
+        $ENV{ZDBA_DBNAME} = $db;
+        Log::Log4perl::init( File::Spec->catpath( $Bin, 'conf', 'log4perl.conf' ) );
+        $zdba->monitor($db);
+    } );
   }
 
   for ( threads->list(threads::all) ) {
@@ -88,6 +93,12 @@ sub count {
   }
 
   return $rc;
+}
+
+sub logfile_name {
+  my $prefix = shift // 'zdba';
+  my $name = $ENV{ZDBA_SPLIT_LOGS} ? ( $ENV{ZDBA_DBNAME} ? "${prefix}_$ENV{ZDBA_DBNAME}" : $prefix ) : $prefix;
+  return File::Spec->catpath( $Bin, 'log', "${name}.log" );
 }
 
 1;

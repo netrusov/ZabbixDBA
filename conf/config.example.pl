@@ -6,6 +6,7 @@
   },
   daemon => {
     sleep => 120,
+    split_logs => 1
   },
   db => {
     default => {

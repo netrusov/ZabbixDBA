@@ -10,13 +10,13 @@ use File::Spec;
 use Log::Log4perl ':easy';
 use Log::Any::Adapter;
 
-use lib File::Spec->catpath( $Bin, 'lib' );
+use lib File::Spec->catfile( $Bin, 'lib' );
 use ZDBA;
 
 $ENV{ZDBA_SPLIT_LOGS} = 0;
 
 Log::Any::Adapter->set('Log4perl');
-Log::Log4perl::init( File::Spec->catpath( $Bin, 'conf', 'log4perl.conf' ) );
+Log::Log4perl::init( File::Spec->catfile( $Bin, 'conf', 'log4perl.conf' ) );
 
 my $running = 1;
 my $counter = {};
@@ -54,7 +54,7 @@ while ($running) {
 
     $pool->{$db} = threads->create( sub {
         $ENV{ZDBA_DBNAME} = $db;
-        Log::Log4perl::init( File::Spec->catpath( $Bin, 'conf', 'log4perl.conf' ) );
+        Log::Log4perl::init( File::Spec->catfile( $Bin, 'conf', 'log4perl.conf' ) );
         $zdba->monitor($db);
     } );
   }
@@ -98,7 +98,7 @@ sub count {
 sub logfile_name {
   my $prefix = shift // 'zdba';
   my $name = $ENV{ZDBA_SPLIT_LOGS} ? ( $ENV{ZDBA_DBNAME} ? "${prefix}_$ENV{ZDBA_DBNAME}" : $prefix ) : $prefix;
-  return File::Spec->catpath( $Bin, 'log', "${name}.log" );
+  return File::Spec->catfile( $Bin, 'log', "${name}.log" );
 }
 
 1;

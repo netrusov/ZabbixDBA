@@ -11,4 +11,5 @@
 *.bak
 *.tdy
 
+/Dockerfile
 /conf/config.pl

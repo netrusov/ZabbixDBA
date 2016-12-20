@@ -1,0 +1,11 @@
+/.git
+/.gitignore
+
+/log
+/tmp
+!/log/.keep
+!/tmp/.keep
+
+/LICENSE
+/VERSION
+/README.md

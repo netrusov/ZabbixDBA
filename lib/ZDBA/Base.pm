@@ -11,7 +11,7 @@ use Moo::Role;
 
 # *** Public attributes
 
-has VERSION      => ( is => 'ro', default => '3.001' );
+has VERSION      => ( is => 'ro', default => '3.0.2' );
 has PROJECT_NAME => ( is => 'ro', default => 'ZabbixDBA' );
 has RETRY_STEP   => ( is => 'ro', default => 2 );
 has SLEEP_DAEMON => ( is => 'ro', default => 120 );

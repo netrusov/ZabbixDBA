@@ -66,7 +66,7 @@ You can also enable `DEBUG` log mode at `conf/log4perl.conf`
 
 ```
 COPYRIGHT AND LICENSE
-    Copyright 2014-2016 by Alexander Netrusov <alexander.netrusov@gmail.com>
+    Copyright 2014-2017 by Alexander Netrusov <alexander.netrusov@gmail.com>
 
     This program is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.

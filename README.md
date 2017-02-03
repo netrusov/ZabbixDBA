@@ -15,15 +15,6 @@ This plugin tested with Oracle, PostgreSQL, and MySQL, and it's 100% compatible 
 
 Feel free to fork and contribute!
 
-## WARNING
-This is new rewritten version of an application.
-Please carefully read changelog at [release](https://github.com/anetrusov/ZabbixDBA/releases) tab.
-To update to the newest version you must do the following:
-```
-git fetch
-git reset --hard origin/master
-```
-
 #### Installation
 Copy project source to desired directory.
 **If path will differ from default (`/opt/zdba`) be sure to change it in startup script.**

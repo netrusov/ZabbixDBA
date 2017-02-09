@@ -2293,7 +2293,6 @@
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
-                            <application_prototypes/>
                         </item_prototype>
                         <item_prototype>
                             <name>Tablespace usage {#TS} (%)</name>
@@ -2337,7 +2336,6 @@
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
-                            <application_prototypes/>
                         </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes>
@@ -2349,7 +2347,6 @@
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <dependencies/>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template Oracle:ts_usage_pct[{#TS}].last(0)}&gt;90</expression>
@@ -2359,7 +2356,6 @@
                             <priority>2</priority>
                             <description/>
                             <type>0</type>
-                            <dependencies/>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
@@ -2520,7 +2516,6 @@
             <priority>2</priority>
             <description>High archivelog generation</description>
             <type>0</type>
-            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:blocking_sessions.avg(#2)}&gt;0</expression>
@@ -2530,7 +2525,6 @@
             <priority>4</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:uptime.last()}&lt;300</expression>
@@ -2540,7 +2534,6 @@
             <priority>1</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:dbversion.change()}=1</expression>
@@ -2550,7 +2543,6 @@
             <priority>1</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:hitratio_table_proc.avg(60)}&lt;50 or {Template Oracle:hitratio_trigger.avg(60)}&lt;50 or {Template Oracle:hitratio_sqlarea.avg(60)}&lt;50 or {Template Oracle:hitratio_body.avg(60)}&lt;50</expression>
@@ -2560,7 +2552,6 @@
             <priority>2</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:alive.last()}=0</expression>
@@ -2570,7 +2561,6 @@
             <priority>5</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:alive.nodata(300)}=1</expression>
@@ -2580,7 +2570,6 @@
             <priority>3</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
         <trigger>
             <expression>({Template Oracle:pga.last()}*100/{Template Oracle:pga_aggregate_target.last()})&gt;98</expression>
@@ -2590,7 +2579,6 @@
             <priority>2</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
     </triggers>
     <graphs>

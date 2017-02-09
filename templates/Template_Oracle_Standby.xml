@@ -170,7 +170,6 @@ or&#13;
             <priority>3</priority>
             <description/>
             <type>0</type>
-            <dependencies/>
         </trigger>
     </triggers>
 </zabbix_export>

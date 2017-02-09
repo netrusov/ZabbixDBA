@@ -66,7 +66,8 @@ daemon => {
 
 ### db
 
-And the main section is "db" where you configure connections to your databases.
+And the main section is "db" where you configure connections to your databases.  
+**Please be sure that database name in configuration file and host name in Zabbix are the same.**
 
 ```perl
 db => {

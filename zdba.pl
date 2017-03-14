@@ -97,7 +97,7 @@ sub count {
 
 sub logfile_name {
   my $prefix = shift // 'zdba';
-  my $name = $ENV{ZDBA_SPLIT_LOGS} ? ( $ENV{ZDBA_DBNAME} ? "${prefix}_$ENV{ZDBA_DBNAME}" : $prefix ) : $prefix;
+  my $name = $ENV{ZDBA_SPLIT_LOGS} ? ( $ENV{ZDBA_DBNAME} // $prefix ) : $prefix;
   return File::Spec->catfile( $Bin, 'log', "${name}.log" );
 }
 

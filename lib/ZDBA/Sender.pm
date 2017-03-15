@@ -27,6 +27,11 @@ has protocol => (
   default => 'tcp'
 );
 
+has chunk_size => (
+  is      => 'ro',
+  default => 10
+);
+
 # *** Private attributes
 
 has socket => ( is => 'rw' );
@@ -79,21 +84,32 @@ sub send {
     return 1;
   }
 
+  while ( my @chunk = splice @data, 0, $self->chunk_size ) {
+    $self->send_chunk(@chunk);
+  }
+
+  return 1;
+}
+
+sub send_chunk {
+  my ( $self, @data ) = @_;
+
   # prepare request body
   my $request = $self->json->encode( {
       'request' => 'sender data',
       'data'    => [@data]
   } );
 
-  $self->log->debug( sub { qq{ready to send data to Zabbix:\n%s}, $request } );
-
   $self->connect unless $self->socket;
-  $self->socket->send( $self->_pack_request($request) );
+
+  $self->log->debug( sub { qq{sending chunk to Zabbix:\n%s}, $request } );
+
+  $self->socket->send( $self->pack_request($request) );
 
   if ($EVAL_ERROR) {
     $self->log->error( q{failed to send data to Zabbix: %s}, $EVAL_ERROR );
   } else {
-    $self->log->debug( sub { q{data has been sent to Zabbix} } );
+    $self->log->debug( sub { q{chunk has been sent to Zabbix} } );
   }
 
   $self->disconnect;
@@ -103,7 +119,7 @@ sub send {
 
 # *** Private methods
 
-sub _pack_request {
+sub pack_request {
   my ( $self, $request ) = @_;
   return pack( $self->request_format, 'ZBXD', 0x01, length( encode( 'UTF-8', $request ) ), 0x00, $request );
 }

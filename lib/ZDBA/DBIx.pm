@@ -41,7 +41,7 @@ sub connect {
   my $dbh = DBI->connect_cached( @{$self}{qw|dsn user pass options|} );
 
   unless ($dbh) {
-    Carp::confess $self->log->fatal( q{failed to connect to '%s': %s}, $self->dsn, DBI->errstr );
+    Carp::confess $self->log->fatal( q{failed to connect to '%s':\n%s}, $self->dsn, DBI->errstr );
   }
 
   $self->log->info( q{connected to '%s'}, $self->dsn );
@@ -72,7 +72,7 @@ sub _fetch {
 
   $method ||= 'selectrow_arrayref';
 
-  $self->connect unless $self->dbh;
+  $self->connect unless ($self->dbh && $self->dbh->ping);
 
   $self->log->debug( sub { qq{fetching data from '%s' using '%s' with options:\n%s}, $self->dsn, $method, $self->dump($args) } );
 

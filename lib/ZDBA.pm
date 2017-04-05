@@ -82,8 +82,8 @@ sub monitor {
 
       next unless @{$result};    # skip empty results
 
-      $result = join ' ', @{$result}; # when two or more fields selected, join them with space.
-                                      # TODO: choose field separator
+      # TODO: choose field separator
+      $result = join ' ', grep { defined } @{$result}; # when two or more fields selected, join them with space.
 
       my @recipients = ($db);
 

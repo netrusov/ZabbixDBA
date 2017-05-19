@@ -37,7 +37,7 @@ sub monitor {
   my ( $self, $db ) = @_;
 
   my $running = 1;
-  local $SIG{INT} = sub { $running = 0 };
+  local $SIG{USR1} = sub { $running = 0 };
 
   $self->log->info( q{starting monitoring of '%s'}, $db );
 

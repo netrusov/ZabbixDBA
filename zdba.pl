@@ -35,7 +35,7 @@ while ($running) {
     unless ( grep { m/$db/ms } @{ $zdba->{config}{db}{list} } ) {
       $zdba->log->info( q{database '%s' has gone from configuration}, $db );
 
-      $pool->{$db}->kill('INT')->join;
+      $pool->{$db}->kill('USR1')->join;
       delete $pool->{$db};
       delete $counter->{$db};
     }
@@ -60,7 +60,7 @@ while ($running) {
   }
 
   for ( threads->list(threads::all) ) {
-    $_->kill('INT')->join unless $_->is_running;
+    $_->kill('USR1')->join unless $_->is_running;
   }
 
   sleep( $zdba->{config}{daemon}{sleep} // $zdba->SLEEP_DAEMON );
@@ -72,7 +72,7 @@ sub stop {
   $running = 0;
 
   while ( threads->list(threads::all) ) {
-    $_->kill('INT')->join for threads->list(threads::all);
+    $_->kill('USR1')->join for threads->list(threads::all);
   }
 
   return 1;

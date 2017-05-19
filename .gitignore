@@ -2,9 +2,13 @@
 /.includepath
 /.project
 
+/config/*
 /log/*
 /tmp/*
 
+!/config/samples
+!/config/log4perl.conf
+!/config/query.props.pl
 !/log/.keep
 !/tmp/.keep
 
@@ -12,4 +16,3 @@
 *.tdy
 
 /Dockerfile
-/conf/config.pl

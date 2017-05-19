@@ -37,7 +37,7 @@ sub monitor {
   my ( $self, $db ) = @_;
 
   my $running = 1;
-  local $SIG{INT} = sub { $running = 0 };
+  local $SIG{USR1} = sub { $running = 0 };
 
   $self->log->info( q{starting monitoring of '%s'}, $db );
 
@@ -82,8 +82,8 @@ sub monitor {
 
       next unless @{$result};    # skip empty results
 
-      $result = join ' ', @{$result}; # when two or more fields selected, join them with space.
-                                      # TODO: choose field separator
+      # TODO: choose field separator
+      $result = join ' ', grep { defined } @{$result}; # when two or more fields selected, join them with space.
 
       my @recipients = ($db);
 

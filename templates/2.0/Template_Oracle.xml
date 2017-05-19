@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2016-09-28T07:23:46Z</date>
+    <date>2017-05-18T15:09:27Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -11,7 +11,6 @@
         <template>
             <template>Template Oracle</template>
             <name>Template Oracle</name>
-            <description/>
             <groups>
                 <group>
                     <name>Templates</name>
@@ -38,12 +37,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -64,7 +60,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Archivelog switch</name>
@@ -81,12 +76,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -107,7 +99,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Blocking Sessions</name>
@@ -124,12 +115,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -150,7 +138,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Blocking Sessions Full Information</name>
@@ -167,12 +154,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -193,7 +177,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>DB Block Changes</name>
@@ -210,12 +193,9 @@
                     <allowed_hosts/>
                     <units>Blocks/sec</units>
                     <delta>2</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -236,7 +216,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>DB Block Gets</name>
@@ -253,12 +232,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -279,7 +255,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>DB Consistent Gets</name>
@@ -296,12 +271,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -322,7 +294,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>DB Files Size</name>
@@ -339,12 +310,9 @@
                     <allowed_hosts/>
                     <units>MB</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -365,7 +333,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>DB Hit Ratio</name>
@@ -382,12 +349,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -408,7 +372,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>DB Physical Reads</name>
@@ -425,12 +388,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -451,7 +411,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>DB Version</name>
@@ -468,12 +427,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -494,7 +450,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Hit ratio - BODY</name>
@@ -511,12 +466,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -537,7 +489,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Hit ratio - SQLAREA</name>
@@ -554,12 +505,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -580,7 +528,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Hit ratio - TABLE/PROCEDURE</name>
@@ -597,12 +544,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -623,7 +567,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Hit ratio - TRIGGER</name>
@@ -640,12 +583,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -666,7 +606,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Max Processes</name>
@@ -683,12 +622,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -709,7 +645,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Max Sessions</name>
@@ -726,12 +661,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -752,7 +684,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Miss Latch</name>
@@ -769,12 +700,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -795,7 +723,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>PGA</name>
@@ -812,12 +739,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -838,7 +762,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>PGA Aggregate target</name>
@@ -855,12 +778,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -881,7 +801,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>PHI/O Datafile Reads</name>
@@ -898,12 +817,9 @@
                     <allowed_hosts/>
                     <units>IO/sec</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -924,7 +840,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>PHI/O Datafile Writes</name>
@@ -941,12 +856,9 @@
                     <allowed_hosts/>
                     <units>IO/sec</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -967,7 +879,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>PHI/O Redo Writes</name>
@@ -984,12 +895,9 @@
                     <allowed_hosts/>
                     <units>IO/sec</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1010,7 +918,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pin hit ratio - BODY</name>
@@ -1027,12 +934,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1053,7 +957,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pin hit ratio - SQLAREA</name>
@@ -1070,12 +973,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1096,7 +996,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pin hit ratio - TABLE-PROCEDURE</name>
@@ -1113,12 +1012,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1139,7 +1035,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pin hit ratio - TRIGGER</name>
@@ -1156,12 +1051,9 @@
                     <allowed_hosts/>
                     <units>%</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1182,7 +1074,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pool dict cache</name>
@@ -1199,12 +1090,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1225,7 +1113,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pool free mem</name>
@@ -1242,12 +1129,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1268,7 +1152,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pool lib cache</name>
@@ -1285,12 +1168,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1311,7 +1191,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pool misc</name>
@@ -1328,12 +1207,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1354,7 +1230,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Pool sql area</name>
@@ -1371,12 +1246,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1397,7 +1269,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Processes</name>
@@ -1414,12 +1285,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1440,50 +1308,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
-                </item>
-                <item>
-                    <name>Sessions</name>
-                    <type>2</type>
-                    <snmp_community/>
-                    <multiplier>0</multiplier>
-                    <snmp_oid/>
-                    <key>session</key>
-                    <delay>300</delay>
-                    <history>90</history>
-                    <trends>365</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <delta>0</delta>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>Oracle</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Session Active</name>
@@ -1500,12 +1324,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1526,7 +1347,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Session Inactive</name>
@@ -1543,12 +1363,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1569,7 +1386,45 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>Sessions</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>session</key>
+                    <delay>300</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
                 </item>
                 <item>
                     <name>Session System</name>
@@ -1586,12 +1441,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1612,7 +1464,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>SGA buffer cache</name>
@@ -1629,12 +1480,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1655,7 +1503,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>SGA fixed</name>
@@ -1672,12 +1519,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1698,7 +1542,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>SGA java pool</name>
@@ -1715,12 +1558,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1741,7 +1581,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>SGA large pool</name>
@@ -1758,12 +1597,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1784,7 +1620,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>SGA log buffer</name>
@@ -1801,12 +1636,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1827,7 +1659,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>SGA shared pool</name>
@@ -1844,12 +1675,9 @@
                     <allowed_hosts/>
                     <units>M</units>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1870,7 +1698,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Uptime</name>
@@ -1887,12 +1714,9 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1913,7 +1737,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Waits Controlfile I/O</name>
@@ -1930,12 +1753,9 @@
                     <allowed_hosts/>
                     <units>ms waits/s</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1956,7 +1776,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Waits direct path read</name>
@@ -1973,12 +1792,9 @@
                     <allowed_hosts/>
                     <units>ms waits/s</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -1999,7 +1815,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Waits File I/O</name>
@@ -2016,12 +1831,9 @@
                     <allowed_hosts/>
                     <units>ms waits/s</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -2042,7 +1854,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Waits Logwrite</name>
@@ -2059,12 +1870,9 @@
                     <allowed_hosts/>
                     <units>ms waits/s</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -2085,7 +1893,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Waits multiblock read</name>
@@ -2102,12 +1909,9 @@
                     <allowed_hosts/>
                     <units>ms waits/s</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -2128,7 +1932,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Waits single block read</name>
@@ -2145,12 +1948,9 @@
                     <allowed_hosts/>
                     <units>ms waits/s</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -2171,7 +1971,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
                 <item>
                     <name>Waits SQLNet</name>
@@ -2188,12 +1987,9 @@
                     <allowed_hosts/>
                     <units>ms waits/s</units>
                     <delta>1</delta>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -2214,7 +2010,6 @@
                         </application>
                     </applications>
                     <valuemap/>
-                    <logtimefmt/>
                 </item>
             </items>
             <discovery_rules>
@@ -2227,12 +2022,9 @@
                     <delay>0</delay>
                     <status>0</status>
                     <allowed_hosts/>
-                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <delay_flex/>
                     <params/>
@@ -2243,57 +2035,10 @@
                     <publickey/>
                     <privatekey/>
                     <port/>
-                    <filter>
-                        <evaltype>0</evaltype>
-                        <formula/>
-                        <conditions/>
-                    </filter>
+                    <filter>:</filter>
                     <lifetime>30</lifetime>
                     <description/>
                     <item_prototypes>
-                        <item_prototype>
-                            <name>Tablespace usage {#TS} (bytes)</name>
-                            <type>2</type>
-                            <snmp_community/>
-                            <multiplier>0</multiplier>
-                            <snmp_oid/>
-                            <key>ts_usage_bytes[{#TS}]</key>
-                            <delay>30</delay>
-                            <history>90</history>
-                            <trends>365</trends>
-                            <status>0</status>
-                            <value_type>0</value_type>
-                            <allowed_hosts/>
-                            <units>bytes</units>
-                            <delta>0</delta>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <formula>1</formula>
-                            <delay_flex/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <data_type>0</data_type>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description/>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Oracle</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                        </item_prototype>
                         <item_prototype>
                             <name>Tablespace usage {#TS} (%)</name>
                             <type>2</type>
@@ -2309,12 +2054,9 @@
                             <allowed_hosts/>
                             <units>%</units>
                             <delta>0</delta>
-                            <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
                             <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
                             <snmpv3_privpassphrase/>
                             <formula>1</formula>
                             <delay_flex/>
@@ -2335,7 +2077,45 @@
                                 </application>
                             </applications>
                             <valuemap/>
-                            <logtimefmt/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tablespace usage {#TS} (bytes)</name>
+                            <type>2</type>
+                            <snmp_community/>
+                            <multiplier>0</multiplier>
+                            <snmp_oid/>
+                            <key>ts_usage_bytes[{#TS}]</key>
+                            <delay>0</delay>
+                            <history>90</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units>bytes</units>
+                            <delta>0</delta>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>0</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Oracle</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
                         </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes>
@@ -2359,7 +2139,6 @@
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
-                    <host_prototypes/>
                 </discovery_rule>
             </discovery_rules>
             <macros/>
@@ -2389,8 +2168,6 @@
                                 <name>SGA Memory Usage</name>
                                 <host>Template Oracle</host>
                             </resource>
-                            <max_columns>3</max_columns>
-                            <application/>
                         </screen_item>
                         <screen_item>
                             <resourcetype>0</resourcetype>
@@ -2411,8 +2188,6 @@
                                 <name>Shared Pool</name>
                                 <host>Template Oracle</host>
                             </resource>
-                            <max_columns>3</max_columns>
-                            <application/>
                         </screen_item>
                         <screen_item>
                             <resourcetype>0</resourcetype>
@@ -2433,8 +2208,6 @@
                                 <name>Physical I/O</name>
                                 <host>Template Oracle</host>
                             </resource>
-                            <max_columns>3</max_columns>
-                            <application/>
                         </screen_item>
                         <screen_item>
                             <resourcetype>0</resourcetype>
@@ -2455,8 +2228,6 @@
                                 <name>Archivelog</name>
                                 <host>Template Oracle</host>
                             </resource>
-                            <max_columns>3</max_columns>
-                            <application/>
                         </screen_item>
                         <screen_item>
                             <resourcetype>0</resourcetype>
@@ -2477,8 +2248,6 @@
                                 <name>Events Waits</name>
                                 <host>Template Oracle</host>
                             </resource>
-                            <max_columns>3</max_columns>
-                            <application/>
                         </screen_item>
                         <screen_item>
                             <resourcetype>0</resourcetype>
@@ -2499,23 +2268,169 @@
                                 <name>Sessions</name>
                                 <host>Template Oracle</host>
                             </resource>
-                            <max_columns>3</max_columns>
-                            <application/>
                         </screen_item>
                     </screen_items>
                 </screen>
             </screens>
         </template>
+        <template>
+            <template>Template Oracle Standby</template>
+            <name>Template Oracle Standby</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Oracle</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Archivelog gap</name>
+                    <type>15</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>archivelog_gap</key>
+                    <delay>30</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params>last(&quot;archivelog_seq&quot;)-last(&quot;archivelog_applied&quot;)</params>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Primary archived log sequence</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>archivelog_seq</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Standby archived log sequence</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>archivelog_applied</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+            </items>
+            <discovery_rules/>
+            <macros/>
+            <templates/>
+            <screens/>
+        </template>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template Oracle:archivelog_switch.last()}&gt;20</expression>
+            <expression>({TRIGGER.VALUE}=0&amp;{Template Oracle Standby:archivelog_gap.last(0)}&gt;10)|({TRIGGER.VALUE}=1&amp;{Template Oracle Standby:archivelog_gap.last(0)}&gt;7)</expression>
+            <name>Archivelog gap</name>
+            <url/>
+            <status>0</status>
+            <priority>3</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template Oracle:archivelog_switch.last(0)}&gt;20</expression>
             <name>Archivelog generation is too fast</name>
             <url/>
             <status>0</status>
             <priority>2</priority>
             <description>High archivelog generation</description>
             <type>0</type>
+            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:blocking_sessions.avg(#2)}&gt;0</expression>
@@ -2525,15 +2440,17 @@
             <priority>4</priority>
             <description/>
             <type>0</type>
+            <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:uptime.last()}&lt;300</expression>
+            <expression>{Template Oracle:uptime.last(0)}&lt;300</expression>
             <name>DB has just been restarted</name>
             <url/>
             <status>0</status>
             <priority>1</priority>
             <description/>
             <type>0</type>
+            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:dbversion.change()}=1</expression>
@@ -2543,24 +2460,27 @@
             <priority>1</priority>
             <description/>
             <type>0</type>
+            <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:hitratio_table_proc.avg(60)}&lt;50 or {Template Oracle:hitratio_trigger.avg(60)}&lt;50 or {Template Oracle:hitratio_sqlarea.avg(60)}&lt;50 or {Template Oracle:hitratio_body.avg(60)}&lt;50</expression>
+            <expression>{Template Oracle:hitratio_table_proc.avg(60)}&lt;50|{Template Oracle:hitratio_trigger.avg(60)}&lt;50|{Template Oracle:hitratio_sqlarea.avg(60)}&lt;50|{Template Oracle:hitratio_body.avg(60)}&lt;50</expression>
             <name>Hit Ratio is less than 50%</name>
             <url/>
             <status>0</status>
             <priority>2</priority>
             <description/>
             <type>0</type>
+            <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template Oracle:alive.last()}=0</expression>
+            <expression>{Template Oracle:alive.last(0)}=0</expression>
             <name>Instance is down or not accessible</name>
             <url/>
             <status>0</status>
             <priority>5</priority>
             <description/>
             <type>0</type>
+            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Oracle:alive.nodata(300)}=1</expression>
@@ -2570,15 +2490,17 @@
             <priority>3</priority>
             <description/>
             <type>0</type>
+            <dependencies/>
         </trigger>
         <trigger>
-            <expression>({Template Oracle:pga.last()}*100/{Template Oracle:pga_aggregate_target.last()})&gt;98</expression>
+            <expression>({Template Oracle:pga.last(0)}*100/{Template Oracle:pga_aggregate_target.last(0)})&gt;98</expression>
             <name>PGA almost fully commited</name>
             <url/>
             <status>0</status>
             <priority>2</priority>
             <description/>
             <type>0</type>
+            <dependencies/>
         </trigger>
     </triggers>
     <graphs>

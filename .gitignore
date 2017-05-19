@@ -2,13 +2,13 @@
 /.includepath
 /.project
 
-/config/*
+/conf/*
 /log/*
 /tmp/*
 
-!/config/samples
-!/config/log4perl.conf
-!/config/query.props.pl
+!/conf/samples
+!/conf/log4perl.conf
+!/conf/query.props.pl
 !/log/.keep
 !/tmp/.keep
 

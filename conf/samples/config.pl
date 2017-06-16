@@ -5,7 +5,7 @@
     timeout => 30,
   },
   daemon => {
-    sleep => 120,
+    sleep      => 120,
     split_logs => 1
   },
   db => {

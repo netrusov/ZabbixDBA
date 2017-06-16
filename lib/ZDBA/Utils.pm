@@ -8,7 +8,7 @@ use Carp ();
 use English '-no_match_vars';
 use Exporter 'import';
 
-our @EXPORT_OK = qw(hash_merge slurp spurt);
+our @EXPORT_OK = qw(hash_merge slurp spurt flatten);
 
 sub hash_merge {
   my ( $target, $source ) = @_;
@@ -16,7 +16,7 @@ sub hash_merge {
   return unless $source;
   return unless ref $target eq 'HASH' && ref $target eq ref $source;
 
-  no if ($PERL_VERSION >= 5.018), warnings => 'experimental';
+  no if ( $PERL_VERSION >= 5.018 ), warnings => 'experimental';
   for my $key ( keys %{$source} ) {
     if ( exists $target->{$key} ) {
       next unless ref $target->{$key} eq ref $source->{$key};
@@ -30,7 +30,7 @@ sub hash_merge {
       $target->{$key} = $source->{$key}
     }
   }
-  use if ($PERL_VERSION >= 5.018), warnings => 'experimental';
+  use if ( $PERL_VERSION >= 5.018 ), warnings => 'experimental';
 
   return $target;
 }
@@ -71,6 +71,10 @@ sub spurt {
     or Carp::confess sprintf q{failed to close filehandle for file '%s': %s}, $file, $EXTENDED_OS_ERROR;
 
   return $content;
+}
+
+sub flatten {
+  return map { ref $_ eq 'ARRAY' ? flatten( @{$_} ) : $_ } @_;
 }
 
 1;

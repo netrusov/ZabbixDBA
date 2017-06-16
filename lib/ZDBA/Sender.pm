@@ -12,9 +12,14 @@ with 'ZDBA::Base';
 
 # *** Public attributes
 
-has [qw|host port|] => (
+has host => (
   is       => 'ro',
   required => 1
+);
+
+has port => (
+  is      => 'ro',
+  default => 10051
 );
 
 has timeout => (

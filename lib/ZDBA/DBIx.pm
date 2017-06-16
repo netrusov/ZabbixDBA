@@ -72,7 +72,7 @@ sub _fetch {
 
   $method ||= 'selectrow_arrayref';
 
-  $self->connect unless ($self->dbh && $self->dbh->ping);
+  $self->connect unless ( $self->dbh && $self->dbh->ping );
 
   $self->log->debug( sub { qq{fetching data from '%s' using '%s' with options:\n%s}, $self->dsn, $method, $self->dump($args) } );
 

@@ -385,7 +385,7 @@ select count(*)
   },
   blocking_sessions_full => {
     query => q{
-    select    lpad(' ', (level - 1) * 4)
+    select listagg(lpad(' ', (level - 1) * 4)
            || 'INST_ID         :  '
            || inst_id
            || chr(10)
@@ -441,8 +441,7 @@ select count(*)
            || chr(10)
            || lpad(' ', (level - 1) * 4)
            || '========================='
-           || chr(10)
-              blocking_sess_info
+           , chr(10)) within group (order by level) as blocking_sess_info
       from (
                   select inst_id || '.' || sid id
                        , case

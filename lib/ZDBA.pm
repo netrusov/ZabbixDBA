@@ -4,12 +4,13 @@ use Carp ();
 use English '-no_match_vars';
 use File::Basename 'dirname';
 use File::Spec ();
+use JSON;
 use Time::HiRes qw(gettimeofday tv_interval);
 
 use ZDBA::Config;
 use ZDBA::DBIx;
 use ZDBA::Sender;
-use ZDBA::Utils 'hash_merge';
+use ZDBA::Utils qw(hash_merge flatten);
 
 use Moo;
 
@@ -27,9 +28,16 @@ has config => (
 
 # *** Private attributes
 
-has [qw|dbi sender|] => ( is => 'lazy' );
+has [qw|dbi senders|] => (
+  is => 'lazy'
+);
 
 has dbconf => ( is => 'rw' );
+
+has json => (
+  is => 'ro',
+  default => sub { JSON->new->utf8 }
+);
 
 # *** Public methods
 
@@ -51,19 +59,19 @@ sub monitor {
     $self->dbconf( { %{ $self->{config}{db}{default} }, %{ $self->{config}{db}{$db} } } );
     $self->dbconf->{sleep} ||= $self->SLEEP_THREAD;
 
-    $self->sender->send( { host => $db, key => 'alive', value => $self->dbi->dbh->ping } );
-
     $self->log->debug( sub { qq{configuration for '%s' has been loaded:\n%s}, $db, $self->dump( $self->dbconf ) } );
 
     # load query file
     my $query_file = $self->{dbconf}{query_list};
     my $qconf      = {};
     for my $file ( ref $query_file ? @{$query_file} : $query_file ) {
-      my $path = $self->_rel2abs($file);
+      my $path = $self->rel2abs($file);
       $qconf = hash_merge( $qconf, $self->config->compile($path) );
     }
 
     my @data;    # data storage
+
+    push @data, { host => $db, key => 'alive', value => $self->dbi->dbh->ping };
 
     my $timings = {
       main => {
@@ -114,7 +122,7 @@ sub monitor {
       push @data, {
         host  => $db,
         key   => $query,
-        value => $self->sender->json->encode($discovered)
+        value => $self->json->encode($discovered)
       };
     }
 
@@ -144,7 +152,9 @@ sub monitor {
     $self->log->debug( sub { qq{timings for '%s':\n%s}, $db, $self->dump($timings) } );
 
     # send fetched data to zabbix
-    $self->sender->send(@data);
+    for my $sender ( values %{ $self->senders } ) {
+      $sender->send(@data);
+    }
 
     # cleanup data array
     undef @data;
@@ -158,6 +168,8 @@ sub monitor {
   $self->log->info( q{stopping monitoring of '%s'}, $db );
 
   $self->dbi->disconnect;
+
+  return;
 }
 
 # *** Private methods
@@ -166,11 +178,17 @@ sub _build_dbi {
   return ZDBA::DBIx->new( shift->{dbconf} );
 }
 
-sub _build_sender {
-  return ZDBA::Sender->new( shift->{config}{zabbix} );
+sub _build_senders {
+  my $senders = {};
+
+  for my $config ( flatten( shift->{config}{zabbix} ) ) {
+    $senders->{$config} = ZDBA::Sender->new($config)
+  }
+
+  return $senders;
 }
 
-sub _rel2abs {
+sub rel2abs {
   my ( $self, $path ) = @_;
   return File::Spec->rel2abs( $path, dirname( $self->config->file ) );
 }

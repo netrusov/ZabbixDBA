@@ -43,7 +43,7 @@ has socket => ( is => 'rw' );
 
 has json => (
   is => 'ro',
-  default => sub { JSON->new->utf8 }
+  default => sub { JSON->new->utf8->allow_nonref }
 );
 
 has request_format => (

@@ -1,4 +1,6 @@
-## ZabbixDBA
+# ZabbixDBA - Zabbix Database Monitoring Service
+
+## Description
 ZabbixDBA is fast and flexible service to monitor your RDBMS.
 
 ZabbixDBA uses threading of DBI connections which is good for monitoring of multiple database instances simultaneously. Just configure it, run daemon and it will do all the job.
@@ -15,7 +17,7 @@ The code has been tested with Oracle, PostgreSQL, and MySQL, and it's 100% compa
 
 Feel free to fork and contribute!
 
-### Documentation
+## Documentation
 
 See [Wiki](https://github.com/anetrusov/ZabbixDBA/wiki) for documentation
 

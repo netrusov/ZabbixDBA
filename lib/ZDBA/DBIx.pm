@@ -77,11 +77,11 @@ sub _fetch {
   $self->log->debug( sub { qq{fetching data from '%s' using '%s' with options:\n%s}, $self->dsn, $method, $self->dump($args) } );
 
   my $start = [gettimeofday];
+  my $options = { MaxRows => 1000, %{ $args->{options} // {} } };
 
   my $result = $self->dbh->$method(
     $args->{query},
-    $args->{options},
-    @{ $args->{bind_values} }
+    $options
   );
 
   my $end = [gettimeofday];

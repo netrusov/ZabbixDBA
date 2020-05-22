@@ -69,39 +69,39 @@
   },
   dbhitratio => {
     query => q{
-        select ( sum (case name when 'consistent gets' then value else 0 end)
+        select replace(( sum (case name when 'consistent gets' then value else 0 end)
         + sum (case name when 'db block gets' then value else 0 end)
         - sum (case name when 'physical reads' then value else 0 end))
         / ( sum (case name when 'consistent gets' then value else 0 end)
         + sum (case name when 'db block gets' then value else 0 end))
-        * 100
+        * 100,',','.')
         from gv$sysstat
     },
   },
   hitratio_body => {
     query => q{
-        select gethitratio * 100
+        select replace(gethitratio * 100,',','.')
         from gv$librarycache
         where namespace = 'BODY'
     },
   },
   hitratio_sqlarea => {
     query => q{
-        select gethitratio * 100
+        select replace(gethitratio * 100,',','.')
         from gv$librarycache
         where namespace = 'SQL AREA'
     },
   },
   hitratio_trigger => {
     query => q{
-        select gethitratio * 100
+        select replace(gethitratio * 100,',','.')
         from gv$librarycache
         where namespace = 'TRIGGER'
     },
   },
   hitratio_table_proc => {
     query => q{
-        select gethitratio * 100
+        select replace(gethitratio * 100,',','.')
         from gv$librarycache
         where namespace = 'TABLE/PROCEDURE'
     },
@@ -148,28 +148,28 @@
   },
   pinhitratio_body => {
     query => q{
-        select pins / (pins + reloads) * 100
+        select replace(pins / (pins + reloads) * 100,',','.')
         from gv$librarycache
         where namespace = 'BODY'
     },
   },
   pinhitratio_sqlarea => {
     query => q{
-        select pins / (pins + reloads) * 100
+        select replace(pins / (pins + reloads) * 100,',','.')
         from gv$librarycache
         where namespace = 'SQL AREA'
     },
   },
   pinhitratio_trigger => {
     query => q{
-        select pins / (pins + reloads) * 100
+        select replace(pins / (pins + reloads) * 100,',','.')
         from gv$librarycache
         where namespace = 'TRIGGER'
     },
   },
   pinhitratio_table_proc => {
     query => q{
-        select pins / (pins + reloads) * 100
+        select replace(pins / (pins + reloads) * 100,',','.')
         from gv$librarycache
         where namespace = 'TABLE/PROCEDURE'
     },
@@ -519,7 +519,7 @@ start with parent_id is null
     item => {
       ts_usage_pct => {
         query => q{
-            select tablespace_name ts, round(used_percent, 5) pct
+            select tablespace_name ts, replace(round(used_percent, 5),',','.') pct
             from dba_tablespace_usage_metrics
         },
         keys => { TS => 'PCT' }
@@ -543,4 +543,4 @@ start with parent_id is null
       },
     },
   },
-}
+} 
